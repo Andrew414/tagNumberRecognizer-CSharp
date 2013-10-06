@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NumberFinder.cs" />
+    <Compile Include="MARPlateFinder.cs" />
+    <Compile Include="PlateFinder.cs" />
+    <Compile Include="StupidPlateFinder.cs" />
     <Compile Include="TagrecSForm.cs">
       <SubType>Form</SubType>
     </Compile>

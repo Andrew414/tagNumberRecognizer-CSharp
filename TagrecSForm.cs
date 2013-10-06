@@ -19,6 +19,7 @@ namespace Tagrec_S
         private bool bCapturing;
         private List<Bitmap> lstBmpSavedNumbers;
 
+        PlateFinder finder;
 
         public TagrecSForm()
         {
@@ -37,6 +38,16 @@ namespace Tagrec_S
             }
 
             lstBmpSavedNumbers = new List<Bitmap>();
+
+            finder = new MARPlateFinder();
+        }
+
+        private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
+        {
+            if (x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
+            {
+                bmp.SetPixel(x, y, color);
+            }
         }
 
         private void tmrCapture_Tick(object sender, EventArgs e)
@@ -50,9 +61,31 @@ namespace Tagrec_S
 
             IplImage snapshot = cvCapture.QueryFrame();
             Bitmap bmpSnapshot = snapshot.ToBitmap();
+            //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
+            Rectangle numberRectangle = finder.FindRectangle(snapshot);
+            
+
+            if (numberRectangle != new Rectangle())
+            {
+                for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++ )
+                {
+                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Left, i, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Left+1, i, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Right, i, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Right-1, i, Color.Cyan);
+                }
+
+                for (int i = numberRectangle.Left; i < numberRectangle.Right; i++)
+                {
+                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top + 1, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom, Color.Cyan);
+                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom - 1, Color.Cyan);
+                }
+            }
+
             pbxCurrentImage.BackgroundImage = bmpSnapshot;
 
-            
             if (true)
             {
                 ilsSavedImages.Images.Add(bmpSnapshot);
