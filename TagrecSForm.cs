@@ -39,7 +39,7 @@ namespace Tagrec_S
 
             lstBmpSavedNumbers = new List<Bitmap>();
 
-            finder = new MARPlateFinder();
+            finder = new MARPlateFinder(this);
         }
 
         private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)

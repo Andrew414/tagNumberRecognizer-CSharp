@@ -49,7 +49,9 @@
   <ItemGroup>
     <Compile Include="MARPlateFinder.cs" />
     <Compile Include="PlateFinder.cs" />
+    <Compile Include="PlateReader.cs" />
     <Compile Include="StupidPlateFinder.cs" />
+    <Compile Include="StupidPlateReader.cs" />
     <Compile Include="TagrecSForm.cs">
       <SubType>Form</SubType>
     </Compile>

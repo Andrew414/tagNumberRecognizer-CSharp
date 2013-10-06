@@ -10,10 +10,12 @@ namespace Tagrec_S
 {
     class MARPlateFinder : PlateFinder
     {
-        public MARPlateFinder()
+        public MARPlateFinder(TagrecSForm form)
         {
-
+            myForm = form;
         }
+
+        TagrecSForm myForm;
 
         private Rectangle CvBox2DToRectangle(CvBox2D box)
         {
@@ -38,7 +40,11 @@ namespace Tagrec_S
             CvMemStorage storage = Cv.CreateMemStorage(0);
             CvSeq<CvPoint> contours;
 
-            int count = Cv.FindContours(canny, storage, out contours);
+            int count = Cv.FindContours(binary, storage, out contours);
+
+            CvBox2D candidate = new CvBox2D();
+            bool candidateFound = false;
+            double candidateSize = 0;
 
             for (int i = 0; i < count; i++)
             {
@@ -48,19 +54,34 @@ namespace Tagrec_S
                 CvBox2D box = Cv.MinAreaRect2(contours);
 
                 if 
-                (   box.Size.Width > 100 && 
-                   (box.Size.Width / box.Size.Height) > 2.5 && 
-                   (box.Size.Width / box.Size.Height) < 3.5
-                    
+                (   box.Size.Width > 200 && 
+                   (box.Size.Width / box.Size.Height) > 4 && 
+                   (box.Size.Width / box.Size.Height) < 4.8 &&
+                   Math.Abs(box.Angle) < 5
                 )
                 {
-                    return new Rectangle(
-                        (int)(box.Center.X - (box.Size.Width / 2)), 
-                        (int)(box.Center.Y - (box.Size.Height / 2)), 
-                        (int)(box.Size.Width), (int)(box.Size.Height));
+                    double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
+                    if (newSize > candidateSize) 
+                    {
+                        candidateSize = newSize;
+                        candidateFound = true;
+                        candidate = box;
+                    }
+                    //return new Rectangle(
+                    //    (int)(box.Center.X - (box.Size.Width / 2)), 
+                    //    (int)(box.Center.Y - (box.Size.Height / 2)), 
+                    //    (int)(box.Size.Width), (int)(box.Size.Height));
                 }
 
                 contours = contours.HNext;
+            }
+
+            if (candidateFound)
+            {
+                return new Rectangle(
+                (int)(candidate.Center.X - (candidate.Size.Width / 2)), 
+                (int)(candidate.Center.Y - (candidate.Size.Height / 2)), 
+                (int)(candidate.Size.Width), (int)(candidate.Size.Height));
             }
 
             return new Rectangle();
@@ -85,7 +106,7 @@ namespace Tagrec_S
             IplImage sobel = new IplImage(ipl.Size, BitDepth.U8, 1);
             binary.Sobel(sobel, 1, 1, ApertureSize.Size3);
 
-            return canny;
+            return binary;
             //return ((now++ % 2) == 0) ? blur : gray;
         }
     }
