@@ -34,7 +34,7 @@ namespace Tagrec_S
 
 //        int before = 20;
 
-
+        ISignReader reader = new MaskSignReader();
 
         public bool IsNumberOrLetter(ContourInfo info)
         {
@@ -72,35 +72,42 @@ namespace Tagrec_S
             }
         }
 
+        public Rectangle ConvertBox2DToRectangle(CvBox2D box)
+        {
+            double angle = Math.Abs(box.Angle);
+
+            if (angle < 5)
+            {
+                return new Rectangle(
+                    (int)(box.Center.X - (box.Size.Width / 2)),
+                    (int)(box.Center.Y - (box.Size.Height / 2)),
+                    (int)(box.Size.Width), (int)(box.Size.Height));
+            }
+            else if (angle > 80 && angle < 100)
+            {
+                return new Rectangle(
+                    (int)(box.Center.X - (box.Size.Height / 2)),
+                    (int)(box.Center.Y - (box.Size.Width / 2)),
+                    (int)(box.Size.Height), (int)(box.Size.Width));
+            }
+            else if (angle > 65 && angle < 75)
+            {
+                return new Rectangle(
+                    (int)(box.Center.X - (box.Size.Height / 2) - 10),
+                    (int)(box.Center.Y - (box.Size.Width / 2) - 5),
+                    (int)(box.Size.Height) + 5, (int)(box.Size.Width) + 10);
+            }
+            else
+            {
+                return new Rectangle();
+            }
+        }
+
         public void DrawBorder(ref Bitmap bmp, ContourInfo info)
         {
             Color BorderColor = Color.Red;
 
-            double angle = Math.Abs(info.Box.Angle);
-
-            Rectangle numberRectangle = new Rectangle();
-
-            if (angle < 5)
-            {
-                numberRectangle = new Rectangle(
-                    (int)(info.Box.Center.X - (info.Box.Size.Width / 2)),
-                    (int)(info.Box.Center.Y - (info.Box.Size.Height / 2)),
-                    (int)(info.Box.Size.Width), (int)(info.Box.Size.Height));
-            }
-            else if (angle > 80 && angle < 100)
-            {
-                numberRectangle = new Rectangle(
-                    (int)(info.Box.Center.X - (info.Box.Size.Height / 2)),
-                    (int)(info.Box.Center.Y - (info.Box.Size.Width / 2)),
-                    (int)(info.Box.Size.Height), (int)(info.Box.Size.Width));
-            }
-            else if (angle > 65 && angle < 75)
-            {
-                numberRectangle = new Rectangle(
-                    (int)(info.Box.Center.X - (info.Box.Size.Height / 2) - 10),
-                    (int)(info.Box.Center.Y - (info.Box.Size.Width / 2) - 5),
-                    (int)(info.Box.Size.Height) + 5, (int)(info.Box.Size.Width) + 10);
-            }
+            Rectangle numberRectangle = ConvertBox2DToRectangle(info.Box);
 
             int BorderSize = 2;
 
@@ -204,7 +211,7 @@ namespace Tagrec_S
 
             if (possibleNumbersAndLetters.Count == 7)
             {
-                return RecognizeNumber();
+                return RecognizeNumber(possibleNumbersAndLetters, ipl);
             }
             else
             {
@@ -212,8 +219,23 @@ namespace Tagrec_S
             }
         }
 
-        public String RecognizeNumber()
+        public String RecognizeNumber(List<ContourInfo> infos, IplImage ipl)
         {
+            String finalNumber = "";
+
+            foreach (var i in infos)
+            {
+                Rectangle next = ConvertBox2DToRectangle(i.Box);
+                ipl.SetROI(next.Left, next.Top,
+                    next.Width, next.Height);
+                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
+                ipl.Copy(justSign);
+                ipl.ResetROI();
+
+                finalNumber += reader.ReadSign(justSign);
+            }
+
+            return finalNumber;
             return "8739 IK-5";
         }
     }
