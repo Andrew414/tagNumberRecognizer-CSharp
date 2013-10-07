@@ -197,5 +197,16 @@ namespace Tagrec_S
 
             StartStopCaptureTimer();
         }
+
+        private void btnSaveSelected_Click(object sender, EventArgs e)
+        {
+            if (lstSavedNumbers.FocusedItem != null)
+            {
+                if (sfdSaveSelected.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    lstBmpSavedNumbers[lstSavedNumbers.FocusedItem.Index].Save(sfdSaveSelected.FileName);
+                }
+            }
+        }
     }
 }

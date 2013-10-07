@@ -74,6 +74,7 @@
             this.btnSaveSelected.TabIndex = 2;
             this.btnSaveSelected.Text = "Save selected";
             this.btnSaveSelected.UseVisualStyleBackColor = true;
+            this.btnSaveSelected.Click += new System.EventHandler(this.btnSaveSelected_Click);
             // 
             // lstSavedNumbers
             // 
@@ -128,7 +129,12 @@
             // 
             // tmrCapture
             // 
+            this.tmrCapture.Interval = 10;
             this.tmrCapture.Tick += new System.EventHandler(this.tmrCapture_Tick);
+            // 
+            // sfdSaveSelected
+            // 
+            this.sfdSaveSelected.Filter = "BMP files|*.bmp";
             // 
             // TagrecSForm
             // 

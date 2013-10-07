@@ -17,7 +17,7 @@ namespace Tagrec_S
 
         public string[] signs = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                                  "A", "B", "C", "E", "H", "I", "K", "M", "O", "P", "T", "X"};
-        public Dictionary<string, Bitmap> signDict = new Dictionary<string, Bitmap>();
+        public Dictionary<string, BinaryMatrix> signDict = new Dictionary<string, BinaryMatrix>();
 
         public void LoadDatabase(String folder)
         {
@@ -25,25 +25,25 @@ namespace Tagrec_S
             {
                 try
                 {
-                    Bitmap bmp = new Bitmap(folder + i + "_resized+cropped.bmp");
-                    signDict.Add(i, bmp);
+                    BinaryMatrix matrix = new BinaryMatrix(folder + @"\" + i.ToString() + @"\" + i.ToString() + ".txt");
+                    signDict.Add(i, matrix);
                 }
-                catch
+                catch(Exception /*e*/)
                 {
-
+                    // TODO: add logger
                 }
             }
         }
 
-        public int Matches(Bitmap bmp1, Bitmap bmp2)
+        public int Matches(BinaryMatrix bmp1, BinaryMatrix bmp2)
         {
             int answer = 0;
             
-            for (int i = 0; i < bmp1.Width; i++)
+            for (int i = 0; i < BinaryMatrix.HEIGHT; i++)
             {
-                for (int j = 0; j < bmp2.Width; j++)
+                for (int j = 0; j < BinaryMatrix.WIDTH; j++)
                 {
-                    if (bmp2.GetPixel(i, j) == bmp1.GetPixel(i, j))
+                    if (bmp2.GetPixelValue(i, j) == bmp1.GetPixelValue(i, j))
                     {
                         answer++;
                     }
@@ -67,7 +67,7 @@ namespace Tagrec_S
             IplImage binary = new IplImage(resized.Size, BitDepth.U8, 1);
             blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
 
-            Bitmap sign = binary.ToBitmap();
+            BinaryMatrix sign = new BinaryMatrix(binary.ToBitmap());
 
             Dictionary<string, int> Matching = new Dictionary<string, int>();
 

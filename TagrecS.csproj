@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenCvSharp">
-      <HintPath>..\..\..\..\..\..\..\..\lib\opencv\csharp\OpenCvSharp.dll</HintPath>
+      <HintPath>..\..\..\..\temp\opencv\csharp\OpenCvSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryMatrix.cs" />
     <Compile Include="MARPlateFinder.cs" />
     <Compile Include="NLPlateReader.cs" />
     <Compile Include="MaskSignReader.cs" />

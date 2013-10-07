@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Tagrec_S
 {
-    struct ContourInfo
+    class ContourInfo : IComparable
     {
         public double P;
         public double S;
@@ -21,7 +21,13 @@ namespace Tagrec_S
             S = s;
             Box = box;
         }
+
+        public int CompareTo(Object a)
+        {
+            return Box.Center.X.CompareTo((a as ContourInfo).Box.Center.X);
+        }
     }
+
 
     class NLPlateReader : IPlateReader
     {
@@ -158,6 +164,7 @@ namespace Tagrec_S
             }
 
             List<ContourInfo> possibleNumbersAndLetters = conInfo.Where(IsNumberOrLetter).ToList();
+            possibleNumbersAndLetters.Sort();
 
             Bitmap CoolBitmap = ipl.ToBitmap();
 
@@ -170,7 +177,7 @@ namespace Tagrec_S
 
             if (possibleNumbersAndLetters.Count == 7)
             {
-                return RecognizeNumber(possibleNumbersAndLetters, ipl);
+                return RecognizeNumber(possibleNumbersAndLetters, ipl).Insert(4, " ").Insert(7, "-");
             }
             else
             {
@@ -195,7 +202,7 @@ namespace Tagrec_S
             }
 
             return finalNumber;
-            return "8739 IK-5";
+
         }
     }
 }
