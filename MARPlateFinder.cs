@@ -10,12 +10,12 @@ namespace Tagrec_S
 {
     class MARPlateFinder : IPlateFinder
     {
-        public MARPlateFinder(TagrecSForm form)
+        public MARPlateFinder()
         {
-            myForm = form;
+            //myForm = form;
         }
 
-        TagrecSForm myForm;
+        //TagrecSForm myForm;
 
         private Rectangle CvBox2DToRectangle(CvBox2D box)
         {

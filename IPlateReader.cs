@@ -8,6 +8,6 @@ namespace Tagrec_S
 {
     interface IPlateReader
     {
-        String ReadPlate(OpenCvSharp.IplImage ipl);
+        String ReadPlate(OpenCvSharp.IplImage ipl, out List<System.Drawing.Rectangle> rects);
     }
 }

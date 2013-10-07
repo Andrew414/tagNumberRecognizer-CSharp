@@ -25,14 +25,16 @@ namespace Tagrec_S
 
     class NLPlateReader : IPlateReader
     {
-        public NLPlateReader(TagrecSForm form)
+        public NLPlateReader(/*TagrecSForm form*/)
         {
-            myForm = form;
+            //myForm = form;
         }
 
-        TagrecSForm myForm;
+ //       TagrecSForm myForm;
 
-        int before = 20;
+//        int before = 20;
+
+
 
         public bool IsNumberOrLetter(ContourInfo info)
         {
@@ -121,7 +123,7 @@ namespace Tagrec_S
             }
         }
 
-        public String ReadPlate(IplImage iplImage)
+        public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
         {
             IplImage ipl = new IplImage(new CvSize(650, 150), iplImage.Depth, iplImage.NChannels);
             iplImage.Resize(ipl);
@@ -136,7 +138,7 @@ namespace Tagrec_S
             IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
             blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
 
-            myForm.pbxCurrentImage.BackgroundImage = binary.ToBitmap();
+            //myForm.pbxCurrentImage.BackgroundImage = binary.ToBitmap();
 
             CvMemStorage storage = Cv.CreateMemStorage(0);
             CvSeq<CvPoint> contours;
@@ -157,7 +159,7 @@ namespace Tagrec_S
 
             List<ContourInfo> possibleNumbersAndLetters = conInfo.Where(IsNumberOrLetter).ToList();
 
-            if (before-- == 0)
+            /*if (before-- == 0)
             {
                 myForm.ilsSavedImages.Images.Add(ipl.ToBitmap());
                 myForm.lstSavedNumbers.Items.Add("ALL image");
@@ -182,7 +184,7 @@ namespace Tagrec_S
                         ((int)(i.Box.Size.Height)).ToString());
                     myForm.lstBmpSavedNumbers.Add(justNumber.ToBitmap());
                 }
-            }
+            }*/
 
             Bitmap CoolBitmap = ipl.ToBitmap();
 
@@ -191,12 +193,28 @@ namespace Tagrec_S
                 DrawBorder(ref CoolBitmap, i);
             }
 
+//            if ()
+
             //myForm.pbxCurrentImage.BackgroundImage = binary.ToBitmap();
-            myForm.pbxCurrentImage.BackgroundImage = CoolBitmap;
+            //myForm.pbxCurrentImage.BackgroundImage = CoolBitmap;
 
-            myForm.Text = possibleNumbersAndLetters.Count.ToString();
+//            myForm.Text = possibleNumbersAndLetters.Count.ToString();
 
-            return "";
+            rectangles = null;
+
+            if (possibleNumbersAndLetters.Count == 7)
+            {
+                return RecognizeNumber();
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public String RecognizeNumber()
+        {
+            return "8739 IK-5";
         }
     }
 }

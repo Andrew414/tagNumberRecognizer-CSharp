@@ -18,6 +18,7 @@ namespace Tagrec_S
         private CvCapture cvCapture;
         private bool bCapturing;
         public List<Bitmap> lstBmpSavedNumbers;
+        public String lastNumberSaved = "";
 
         IPlateFinder finder;
         IPlateReader reader;
@@ -40,8 +41,8 @@ namespace Tagrec_S
 
             lstBmpSavedNumbers = new List<Bitmap>();
 
-            finder = new MARPlateFinder (this);
-            reader = new NLPlateReader(this);
+            finder = new MARPlateFinder ();
+            reader = new NLPlateReader();
         }
 
         private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
@@ -73,13 +74,14 @@ namespace Tagrec_S
 
             if (numberRectangle != new Rectangle())
             {
-                snapshot.SetROI(numberRectangle.Left, numberRectangle.Top, 
+                snapshot.SetROI(numberRectangle.Left, numberRectangle.Top,
                     numberRectangle.Width, numberRectangle.Height);
                 IplImage justNumber = new IplImage(Cv.GetSize(snapshot), snapshot.Depth, snapshot.NChannels);
                 snapshot.Copy(justNumber);
                 snapshot.ResetROI();
 
-                String carNumber = reader.ReadPlate(justNumber);
+                List<Rectangle> numbers;
+                String carNumber = reader.ReadPlate(justNumber, out numbers);
 
                 Color BorderColor;
 
@@ -87,15 +89,29 @@ namespace Tagrec_S
                 {
                     ProcessRecognizedNumber();
                     BorderColor = Color.Green;
+
+                    if (carNumber != lastNumberSaved)
+                    {
+                        ilsSavedImages.Images.Add(bmpSnapshot);
+                        DateTime now = DateTime.Now;
+                        lstSavedNumbers.Items.Add(new ListViewItem(now.Year.ToString() + "-" + now.Month.ToString() + "-"
+                         + now.Day.ToString() + " " + now.Hour + ":" + now.Minute + " " + carNumber, lstBmpSavedNumbers.Count));
+                        lstBmpSavedNumbers.Add(bmpSnapshot);
+
+                        lastNumberSaved = carNumber;
+                    }
+
+                    this.Text = carNumber;
                 }
                 else
                 {
                     BorderColor = Color.Red;
+                    this.Text = "Searching...";
                 }
-                
+
                 int BorderSize = 5;
 
-                for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++ )
+                for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++)
                 {
                     for (int j = 0; j < BorderSize; j++)
                     {
@@ -115,15 +131,12 @@ namespace Tagrec_S
 
                 //bmpSnapshot = justNumber.ToBitmap();
             }
+            else
+            {
+                this.Text = "Searching...";
+            }
 
-            //pbxCurrentImage.BackgroundImage = bmpSnapshot;
-
-            //if (true)
-            //{
-            //    ilsSavedImages.Images.Add(bmpSnapshot);
-            //    lstSavedNumbers.Items.Add(new ListViewItem("2013-10-06 15:23 " + "8739 IK-I 5", lstBmpSavedNumbers.Count));
-            //    lstBmpSavedNumbers.Add(bmpSnapshot);
-            //}
+            pbxCurrentImage.BackgroundImage = bmpSnapshot;
 
             Application.DoEvents();
         }
