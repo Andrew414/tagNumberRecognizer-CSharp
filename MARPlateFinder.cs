@@ -12,10 +12,8 @@ namespace Tagrec_S
     {
         public MARPlateFinder()
         {
-            //myForm = form;
         }
 
-        //TagrecSForm myForm;
 
         private Rectangle CvBox2DToRectangle(CvBox2D box)
         {
@@ -95,10 +93,6 @@ namespace Tagrec_S
                             candidate = box;
                         }
                     }
-                    //return new Rectangle(
-                    //    (int)(box.Center.X - (box.Size.Width / 2)), 
-                    //    (int)(box.Center.Y - (box.Size.Height / 2)), 
-                    //    (int)(box.Size.Width), (int)(box.Size.Height));
                 }
 
                 contours = contours.HNext;
@@ -114,8 +108,6 @@ namespace Tagrec_S
 
             return new Rectangle();
         }
-
-        //int now = 0;
 
         public IplImage Transform(IplImage ipl)
         {
@@ -138,7 +130,6 @@ namespace Tagrec_S
             binary.Sobel(sobel, 1, 1, ApertureSize.Size3);
 
             return contrasted;
-            //return ((now++ % 2) == 0) ? blur : gray;
         }
     }
 }

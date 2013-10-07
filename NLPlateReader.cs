@@ -27,12 +27,8 @@ namespace Tagrec_S
     {
         public NLPlateReader(/*TagrecSForm form*/)
         {
-            //myForm = form;
+
         }
-
- //       TagrecSForm myForm;
-
-//        int before = 20;
 
         ISignReader reader = new MaskSignReader();
 
@@ -134,7 +130,6 @@ namespace Tagrec_S
         {
             IplImage ipl = new IplImage(new CvSize(650, 150), iplImage.Depth, iplImage.NChannels);
             iplImage.Resize(ipl);
-            //myForm.Text = ipl.Size.Width.ToString() + "x" + ipl.Size.Height.ToString();
 
             IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
             ipl.CvtColor(gray, ColorConversion.BgrToGray);
@@ -144,8 +139,6 @@ namespace Tagrec_S
 
             IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
             blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
-
-            //myForm.pbxCurrentImage.BackgroundImage = binary.ToBitmap();
 
             CvMemStorage storage = Cv.CreateMemStorage(0);
             CvSeq<CvPoint> contours;
@@ -166,46 +159,12 @@ namespace Tagrec_S
 
             List<ContourInfo> possibleNumbersAndLetters = conInfo.Where(IsNumberOrLetter).ToList();
 
-            /*if (before-- == 0)
-            {
-                myForm.ilsSavedImages.Images.Add(ipl.ToBitmap());
-                myForm.lstSavedNumbers.Items.Add("ALL image");
-                myForm.lstBmpSavedNumbers.Add(ipl.ToBitmap());
-
-                foreach (var i in possibleNumbersAndLetters)
-                {
-                    Rectangle newRect = new Rectangle(
-                    (int)(i.Box.Center.X - (i.Box.Size.Width / 2)),
-                    (int)(i.Box.Center.Y - (i.Box.Size.Height / 2)),
-                    (int)(i.Box.Size.Width), (int)(i.Box.Size.Height));
-
-                    ipl.SetROI(newRect.Left, newRect.Top,
-                    newRect.Width, newRect.Height);
-                    IplImage justNumber = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
-                    ipl.Copy(justNumber);
-                    ipl.ResetROI();
-
-                    myForm.ilsSavedImages.Images.Add(justNumber.ToBitmap());
-                    myForm.lstSavedNumbers.Items.Add("angle=" + i.Box.Angle.ToString()
-                        + " sz=" + ((int)(i.Box.Size.Width)).ToString() + "*" + 
-                        ((int)(i.Box.Size.Height)).ToString());
-                    myForm.lstBmpSavedNumbers.Add(justNumber.ToBitmap());
-                }
-            }*/
-
             Bitmap CoolBitmap = ipl.ToBitmap();
 
             foreach (var i in possibleNumbersAndLetters)
             {
                 DrawBorder(ref CoolBitmap, i);
             }
-
-//            if ()
-
-            //myForm.pbxCurrentImage.BackgroundImage = binary.ToBitmap();
-            //myForm.pbxCurrentImage.BackgroundImage = CoolBitmap;
-
-//            myForm.Text = possibleNumbersAndLetters.Count.ToString();
 
             rectangles = null;
 
