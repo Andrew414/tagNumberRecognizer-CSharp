@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tagrec_S
 {
-    interface PlateFinder
+    interface IPlateFinder
     {
         System.Drawing.Rectangle FindRectangle(OpenCvSharp.IplImage ipl);
         OpenCvSharp.IplImage Transform(OpenCvSharp.IplImage ipl);

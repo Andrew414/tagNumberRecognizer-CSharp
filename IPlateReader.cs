@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tagrec_S
 {
-    class StupidPlateReader : IPlateReader
+    interface IPlateReader
     {
-        public String ReadPlate(OpenCvSharp.IplImage ipl) { return "4142 AB-1"; } 
+        String ReadPlate(OpenCvSharp.IplImage ipl);
     }
 }

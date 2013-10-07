@@ -150,16 +150,16 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox gbxSavedImages;
-        private System.Windows.Forms.GroupBox gbxCurrent;
-        private System.Windows.Forms.PictureBox pbxCurrentImage;
-        private System.Windows.Forms.ListView lstSavedNumbers;
-        private System.Windows.Forms.ImageList ilsSavedImages;
-        private System.Windows.Forms.CheckBox cbxAutoSave;
-        private System.Windows.Forms.Button btnSaveSelected;
-        private System.Windows.Forms.Button btnStartStop;
-        private System.Windows.Forms.Timer tmrCapture;
-        private System.Windows.Forms.SaveFileDialog sfdSaveSelected;
+        public System.Windows.Forms.GroupBox gbxSavedImages;
+        public System.Windows.Forms.GroupBox gbxCurrent;
+        public System.Windows.Forms.PictureBox pbxCurrentImage;
+        public System.Windows.Forms.ListView lstSavedNumbers;
+        public System.Windows.Forms.ImageList ilsSavedImages;
+        public System.Windows.Forms.CheckBox cbxAutoSave;
+        public System.Windows.Forms.Button btnSaveSelected;
+        public System.Windows.Forms.Button btnStartStop;
+        public System.Windows.Forms.Timer tmrCapture;
+        public System.Windows.Forms.SaveFileDialog sfdSaveSelected;
 
     }
 }

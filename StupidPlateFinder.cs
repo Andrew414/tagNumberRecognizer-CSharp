@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tagrec_S
 {
-    class StupidPlateFinder : PlateFinder
+    class StupidPlateFinder : IPlateFinder
     {
         public System.Drawing.Rectangle FindRectangle(OpenCvSharp.IplImage ipl)
         {

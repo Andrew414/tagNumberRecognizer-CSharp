@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tagrec_S
 {
-    interface PlateReader
+    class StupidSignReader : ISignReader
     {
-        String ReadPlate(OpenCvSharp.IplImage ipl);
+        public String ReadSign(System.Drawing.Bitmap bmp) { return "A"; }
     }
 }

@@ -17,9 +17,10 @@ namespace Tagrec_S
 
         private CvCapture cvCapture;
         private bool bCapturing;
-        private List<Bitmap> lstBmpSavedNumbers;
+        public List<Bitmap> lstBmpSavedNumbers;
 
-        PlateFinder finder;
+        IPlateFinder finder;
+        IPlateReader reader;
 
         public TagrecSForm()
         {
@@ -39,7 +40,8 @@ namespace Tagrec_S
 
             lstBmpSavedNumbers = new List<Bitmap>();
 
-            finder = new MARPlateFinder(this);
+            finder = new MARPlateFinder (this);
+            reader = new NLPlateReader(this);
         }
 
         private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
@@ -48,6 +50,11 @@ namespace Tagrec_S
             {
                 bmp.SetPixel(x, y, color);
             }
+        }
+
+        private void ProcessRecognizedNumber()
+        {
+
         }
 
         private void tmrCapture_Tick(object sender, EventArgs e)
@@ -63,35 +70,60 @@ namespace Tagrec_S
             Bitmap bmpSnapshot = snapshot.ToBitmap();
             //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
             Rectangle numberRectangle = finder.FindRectangle(snapshot);
-            
 
             if (numberRectangle != new Rectangle())
             {
+                snapshot.SetROI(numberRectangle.Left, numberRectangle.Top, 
+                    numberRectangle.Width, numberRectangle.Height);
+                IplImage justNumber = new IplImage(Cv.GetSize(snapshot), snapshot.Depth, snapshot.NChannels);
+                snapshot.Copy(justNumber);
+                snapshot.ResetROI();
+
+                String carNumber = reader.ReadPlate(justNumber);
+
+                Color BorderColor;
+
+                if (carNumber != "")
+                {
+                    ProcessRecognizedNumber();
+                    BorderColor = Color.Green;
+                }
+                else
+                {
+                    BorderColor = Color.Red;
+                }
+                
+                int BorderSize = 5;
+
                 for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++ )
                 {
-                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Left, i, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Left+1, i, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Right, i, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, numberRectangle.Right-1, i, Color.Cyan);
+                    for (int j = 0; j < BorderSize; j++)
+                    {
+                        SafeSetPixel(ref bmpSnapshot, numberRectangle.Left + j, i, BorderColor);
+                        SafeSetPixel(ref bmpSnapshot, numberRectangle.Right - j, i, BorderColor);
+                    }
                 }
 
                 for (int i = numberRectangle.Left; i < numberRectangle.Right; i++)
                 {
-                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top + 1, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom, Color.Cyan);
-                    SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom - 1, Color.Cyan);
+                    for (int j = 0; j < BorderSize; j++)
+                    {
+                        SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top + j, BorderColor);
+                        SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom - j, BorderColor);
+                    }
                 }
+
+                //bmpSnapshot = justNumber.ToBitmap();
             }
 
-            pbxCurrentImage.BackgroundImage = bmpSnapshot;
+            //pbxCurrentImage.BackgroundImage = bmpSnapshot;
 
-            if (true)
-            {
-                ilsSavedImages.Images.Add(bmpSnapshot);
-                lstSavedNumbers.Items.Add(new ListViewItem("2013-10-06 15:23 " + "8739 IK-I 5", lstBmpSavedNumbers.Count));
-                lstBmpSavedNumbers.Add(bmpSnapshot);
-            }
+            //if (true)
+            //{
+            //    ilsSavedImages.Images.Add(bmpSnapshot);
+            //    lstSavedNumbers.Items.Add(new ListViewItem("2013-10-06 15:23 " + "8739 IK-I 5", lstBmpSavedNumbers.Count));
+            //    lstBmpSavedNumbers.Add(bmpSnapshot);
+            //}
 
             Application.DoEvents();
         }

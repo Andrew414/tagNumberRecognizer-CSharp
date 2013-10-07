@@ -8,7 +8,7 @@ using OpenCvSharp;
 
 namespace Tagrec_S
 {
-    class MARPlateFinder : PlateFinder
+    class MARPlateFinder : IPlateFinder
     {
         public MARPlateFinder(TagrecSForm form)
         {
@@ -20,6 +20,31 @@ namespace Tagrec_S
         private Rectangle CvBox2DToRectangle(CvBox2D box)
         {
             return new Rectangle();
+        }
+
+        private bool IsPixelRed(Color color)
+        {
+            return (color.R > 210 && color.G < 200 && color.B < 200);
+        }
+
+        private bool IsPixelGreen(Color color)
+        {
+            return (color.G > 210 && color.R < 200);
+        }
+
+        private bool IsPixelWhite(Color color)
+        {
+            return (color.R > 200 && color.G > 200 && color.B > 200);
+        }
+
+        private bool IsPixelBlack(Color color)
+        {
+            return (color.R + color.G + color.B < 500);
+        }
+
+        private bool CheckPlate(IplImage ipl, CvBox2D box)
+        {
+            return true;
         }
 
         public Rectangle FindRectangle(IplImage ipl)
@@ -60,12 +85,15 @@ namespace Tagrec_S
                    Math.Abs(box.Angle) < 5
                 )
                 {
-                    double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
-                    if (newSize > candidateSize) 
+                    if (CheckPlate(ipl, box))
                     {
-                        candidateSize = newSize;
-                        candidateFound = true;
-                        candidate = box;
+                        double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
+                        if (newSize > candidateSize) 
+                        {
+                            candidateSize = newSize;
+                            candidateFound = true;
+                            candidate = box;
+                        }
                     }
                     //return new Rectangle(
                     //    (int)(box.Center.X - (box.Size.Width / 2)), 
@@ -87,12 +115,15 @@ namespace Tagrec_S
             return new Rectangle();
         }
 
-        int now = 0;
+        //int now = 0;
 
         public IplImage Transform(IplImage ipl)
         {
             IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
             ipl.CvtColor(gray, ColorConversion.BgrToGray);
+
+            IplImage contrasted = new IplImage(ipl.Size, BitDepth.U8, 1);
+            gray.EqualizeHist(contrasted);
 
             IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
             gray.Smooth(blur, SmoothType.Blur, 5, 5);
@@ -106,7 +137,7 @@ namespace Tagrec_S
             IplImage sobel = new IplImage(ipl.Size, BitDepth.U8, 1);
             binary.Sobel(sobel, 1, 1, ApertureSize.Size3);
 
-            return binary;
+            return contrasted;
             //return ((now++ % 2) == 0) ? blur : gray;
         }
     }

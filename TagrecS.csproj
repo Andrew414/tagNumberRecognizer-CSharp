@@ -48,10 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MARPlateFinder.cs" />
-    <Compile Include="PlateFinder.cs" />
-    <Compile Include="PlateReader.cs" />
+    <Compile Include="NLPlateReader.cs" />
+    <Compile Include="MaskSignReader.cs" />
+    <Compile Include="IPlateFinder.cs" />
+    <Compile Include="IPlateReader.cs" />
+    <Compile Include="ISignReader.cs" />
     <Compile Include="StupidPlateFinder.cs" />
     <Compile Include="StupidPlateReader.cs" />
+    <Compile Include="StupidSignReader.cs" />
     <Compile Include="TagrecSForm.cs">
       <SubType>Form</SubType>
     </Compile>
