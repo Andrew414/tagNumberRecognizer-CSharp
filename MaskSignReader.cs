@@ -35,7 +35,7 @@ namespace Tagrec_S
             }
         }
 
-        public int Matches(BinaryMatrix bmp1, BinaryMatrix bmp2)
+        public static int Matches(BinaryMatrix bmp1, BinaryMatrix bmp2)
         {
             int answer = 0;
             
@@ -51,6 +51,24 @@ namespace Tagrec_S
             }
 
             return answer;
+        }
+
+        public String FindBestMatches(BinaryMatrix matrix)
+        {
+            int max = -1;
+            String answer = "";
+
+            foreach (var i in signDict)
+            {
+                if (Matches(i.Value, matrix) > max)
+                {
+                    max = Matches(i.Value, matrix);
+                    answer = i.Key;
+                }
+            }
+
+            return answer;
+
         }
 
         public String ReadSign(IplImage ipl)
@@ -69,26 +87,7 @@ namespace Tagrec_S
 
             BinaryMatrix sign = new BinaryMatrix(binary.ToBitmap());
 
-            Dictionary<string, int> Matching = new Dictionary<string, int>();
-
-            foreach (var i in signDict)
-            {
-                Matching.Add(i.Key, Matches(i.Value, sign));
-            }
-
-            int max = -1;
-            String answer = "";
-
-            foreach (var i in Matching)
-            {
-                if (i.Value > max)
-                {
-                    max = i.Value;
-                    answer = i.Key;
-                }
-            }
-
-            return answer;
+            return FindBestMatches(sign);
         }
     }
 }

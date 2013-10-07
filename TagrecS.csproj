@@ -54,6 +54,7 @@
     <Compile Include="BinaryMatrix.cs" />
     <Compile Include="BinaryMatrixTest.cs" />
     <Compile Include="MARPlateFinder.cs" />
+    <Compile Include="MaskSignReaderTests.cs" />
     <Compile Include="NLPlateReader.cs" />
     <Compile Include="MaskSignReader.cs" />
     <Compile Include="IPlateFinder.cs" />
