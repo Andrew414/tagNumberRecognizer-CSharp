@@ -39,9 +39,9 @@ namespace Tagrec_S
         {
             int answer = 0;
             
-            for (int i = 0; i < BinaryMatrix.HEIGHT; i++)
+            for (int i = 0; i < BinaryMatrix.WIDTH; i++)
             {
-                for (int j = 0; j < BinaryMatrix.WIDTH; j++)
+                for (int j = 0; j < BinaryMatrix.HEIGHT; j++)
                 {
                     if (bmp2.GetPixelValue(i, j) == bmp1.GetPixelValue(i, j))
                     {

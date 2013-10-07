@@ -10,26 +10,28 @@ namespace Tagrec_S
 {
     class BinaryMatrix
     {
-        public const int WIDTH = 200;
-        public const int HEIGHT = 120;
+        public const int WIDTH = 120;
+        public const int HEIGHT = 200;
 
-        private int[,] matrix = new int[HEIGHT, WIDTH];
+        private int[,] matrix = new int[WIDTH, HEIGHT];
 
         public BinaryMatrix(String filename)
         {
-            StreamReader reader = new StreamReader(filename);
             
-            String curLine;
-            int lineInd = 0;
-            while ((curLine = reader.ReadLine()) != null)
-            {
-                var row = curLine.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToArray();
-                for (int i = 0; i < row.Length; ++i)
+            using (StreamReader reader = new StreamReader(filename)) {            
+                String curLine;
+                int lineInd = 0;
+                while ((curLine = reader.ReadLine()) != null)
                 {
-                    matrix[lineInd, i] = row[i];
+                    var row = curLine.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToArray();
+                    for (int i = 0; i < row.Length; ++i)
+                    {
+                        matrix[lineInd, i] = row[i];
+                    }
+                    ++lineInd;
                 }
-                ++lineInd;
             }
+
         }
 
         public BinaryMatrix(Bitmap bmp)
