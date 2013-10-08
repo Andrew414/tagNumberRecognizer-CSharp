@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
 using System.Threading;
+using NLog;
 
 namespace Tagrec_S
 {
@@ -197,6 +198,7 @@ namespace Tagrec_S
 
             StartStopCaptureTimer();
         }
+        
 
         private void btnSaveSelected_Click(object sender, EventArgs e)
         {

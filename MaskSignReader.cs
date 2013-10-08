@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using OpenCvSharp;
+using NLog;
 
 namespace Tagrec_S
 {
@@ -18,7 +19,7 @@ namespace Tagrec_S
         public string[] signs = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                                  "A", "B", "C", "E", "H", "I", "K", "M", "O", "P", "T", "X"};
         public Dictionary<string, BinaryMatrix> signDict = new Dictionary<string, BinaryMatrix>();
-
+        public static Logger log;
         public void LoadDatabase(String folder)
         {
             foreach (var i in signs)
@@ -28,9 +29,11 @@ namespace Tagrec_S
                     BinaryMatrix matrix = new BinaryMatrix(folder + @"\" + i.ToString() + @"\" + i.ToString() + ".txt");
                     signDict.Add(i, matrix);
                 }
-                catch(Exception /*e*/)
+                catch(Exception e)
                 {
-                    // TODO: add logger
+                    //TODO: add logger
+                    //log = LogManager.GetCurrentClassLogger();
+                    //log.Error("No such sign. Update your database. Exception message: " + e.Message);
                 }
             }
         }

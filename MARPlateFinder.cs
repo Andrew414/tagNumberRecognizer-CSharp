@@ -77,10 +77,10 @@ namespace Tagrec_S
                 CvBox2D box = Cv.MinAreaRect2(contours);
 
                 if 
-                (   box.Size.Width > 200 && 
+                (   box.Size.Width > 50 && 
                    (box.Size.Width / box.Size.Height) > 4 && 
                    (box.Size.Width / box.Size.Height) < 4.8 &&
-                   Math.Abs(box.Angle) < 5
+                   Math.Abs(box.Angle) < 30
                 )
                 {
                     if (CheckPlate(ipl, box))
