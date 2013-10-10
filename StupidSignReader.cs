@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Emgu.CV;
 
 namespace Tagrec_S
 {
     class StupidSignReader : ISignReader
     {
-        public String ReadSign(OpenCvSharp.IplImage bmp) { return "A"; }
+        public String ReadSign(IImage bmp) { return "A"; }
     }
 }

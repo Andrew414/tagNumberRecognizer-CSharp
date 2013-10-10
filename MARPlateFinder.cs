@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
-using OpenCvSharp;
+using Emgu.CV.Structure;
+using Emgu.CV;
 
 namespace Tagrec_S
 {
@@ -15,7 +12,7 @@ namespace Tagrec_S
         }
 
 
-        private Rectangle CvBox2DToRectangle(CvBox2D box)
+        private Rectangle CvBox2DToRectangle(MCvBox2D box)
         {
             return new Rectangle();
         }
@@ -40,96 +37,79 @@ namespace Tagrec_S
             return (color.R + color.G + color.B < 500);
         }
 
-        private bool CheckPlate(IplImage ipl, CvBox2D box)
+        private bool CheckPlate(IImage ipl, MCvBox2D box)
         {
             return true;
         }
 
-        public Rectangle FindRectangle(IplImage ipl)
+        public Rectangle FindRectangle(IImage ipl)
         {
-            IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
-            ipl.CvtColor(gray, ColorConversion.BgrToGray);
+            Image<Gray, Byte> gray = ((Image<Bgr, Byte>)ipl).Convert<Gray, Byte>();
 
-            IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            Image<Gray, Byte> blur = gray.SmoothBlur (5, 5);
 
-            IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
-            IplImage canny = new IplImage(ipl.Size, BitDepth.U8, 1);
-            binary.Canny(canny, 0, 100);
+            Image<Gray, Byte> canny = binary.Canny(0, 100);
 
-
-            CvMemStorage storage = Cv.CreateMemStorage(0);
-            CvSeq<CvPoint> contours;
-
-            int count = Cv.FindContours(binary, storage, out contours);
-
-            CvBox2D candidate = new CvBox2D();
+            MCvBox2D candidate = new MCvBox2D();
             bool candidateFound = false;
             double candidateSize = 0;
 
-            for (int i = 0; i < count; i++)
+            using (MemStorage storage = new MemStorage())
             {
-                double p = Math.Abs(Cv.ContourPerimeter(contours));
-                double s = Math.Abs(Cv.ContourArea(contours));
-
-                CvBox2D box = Cv.MinAreaRect2(contours);
-
-                if 
-                (   box.Size.Width > 200 && 
-                   (box.Size.Width / box.Size.Height) > 4 && 
-                   (box.Size.Width / box.Size.Height) < 4.8 &&
-                   Math.Abs(box.Angle) < 5
-                )
+                for (Contour<Point> contours = binary.FindContours(); contours != null; contours = contours.HNext)
                 {
-                    if (CheckPlate(ipl, box))
+                    Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * 0.05, storage);
+
+                    double p = Math.Abs(currentContour.Perimeter);
+                    double s = Math.Abs(currentContour.Area);
+
+                    MCvBox2D box = currentContour.GetMinAreaRect();
+
+                    if(box.size.Width > 50 && 
+                       (box.size.Width / box.size.Height) > 4 && 
+                       (box.size.Width / box.size.Height) < 4.8 &&
+                       Math.Abs(box.angle) < 5)
                     {
-                        double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
-                        if (newSize > candidateSize) 
+                        if (CheckPlate(ipl, box))
                         {
-                            candidateSize = newSize;
-                            candidateFound = true;
-                            candidate = box;
+                            double newSize = box.size.Width / (Math.Abs(box.angle) + 2.0);
+                            if (newSize > candidateSize) 
+                            {
+                                candidateSize = newSize;
+                                candidateFound = true;
+                                candidate = box;
+                            }
                         }
                     }
                 }
-
-                contours = contours.HNext;
             }
 
             if (candidateFound)
             {
                 return new Rectangle(
-                (int)(candidate.Center.X - (candidate.Size.Width / 2)), 
-                (int)(candidate.Center.Y - (candidate.Size.Height / 2)), 
-                (int)(candidate.Size.Width), (int)(candidate.Size.Height));
+                (int)(candidate.center.X - (candidate.size.Width / 2)), 
+                (int)(candidate.center.Y - (candidate.size.Height / 2)), 
+                (int)(candidate.size.Width), (int)(candidate.size.Height));
             }
 
             return new Rectangle();
         }
 
-        public IplImage Transform(IplImage ipl)
+        public IImage Transform(IImage ipl)
         {
-            IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
-            ipl.CvtColor(gray, ColorConversion.BgrToGray);
+            var gray = new Image<Gray, Byte>(ipl.Size);
 
-            IplImage contrasted = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.EqualizeHist(contrasted);
+            var blur = gray.SmoothBlur (5, 5);
 
-            IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            var binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
-            IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            var canny = binary.Canny(0, 100);
 
-            IplImage canny = new IplImage(ipl.Size, BitDepth.U8, 1);
-            binary.Canny(canny, 0, 100);
+            var sobel = canny.Sobel (1, 1, 3);
 
-            IplImage sobel = new IplImage(ipl.Size, BitDepth.U8, 1);
-            binary.Sobel(sobel, 1, 1, ApertureSize.Size3);
-
-            return contrasted;
+            return gray;
         }
     }
 }

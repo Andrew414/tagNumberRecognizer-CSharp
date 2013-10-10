@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
-using OpenCvSharp;
+
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 namespace Tagrec_S
 {
@@ -53,19 +52,15 @@ namespace Tagrec_S
             return answer;
         }
 
-        public String ReadSign(IplImage ipl)
+        public String ReadSign(IImage ipl)
         {
-            IplImage resized = new IplImage(new CvSize(120, 200), ipl.Depth, ipl.NChannels);
-            ipl.Resize(resized);
+            var size = new Size(120, 200);
 
-            IplImage gray = new IplImage(resized.Size, BitDepth.U8, 1);
-            resized.CvtColor(gray, ColorConversion.BgrToGray);
+            Image<Gray, Byte> gray = new Image<Gray, Byte>(size);
 
-            IplImage blur = new IplImage(resized.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            Image<Gray, Byte> blur = gray.SmoothBlur(5, 5);
 
-            IplImage binary = new IplImage(resized.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
             BinaryMatrix sign = new BinaryMatrix(binary.ToBitmap());
 

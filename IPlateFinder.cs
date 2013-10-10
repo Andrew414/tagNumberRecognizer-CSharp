@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Emgu.CV;
 
 namespace Tagrec_S
 {
     interface IPlateFinder
     {
-        System.Drawing.Rectangle FindRectangle(OpenCvSharp.IplImage ipl);
-        OpenCvSharp.IplImage Transform(OpenCvSharp.IplImage ipl);
+        System.Drawing.Rectangle FindRectangle(IImage ipl);
+        IImage Transform(IImage ipl);
     }
 }
