@@ -85,6 +85,7 @@ namespace Tagrec_S
                 {
                     if (CheckPlate(ipl, box))
                     {
+                        // написать коментарий
                         double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
                         if (newSize > candidateSize) 
                         {

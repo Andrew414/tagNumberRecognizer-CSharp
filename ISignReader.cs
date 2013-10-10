@@ -8,6 +8,6 @@ namespace Tagrec_S
 {
     interface ISignReader
     {
-        String ReadSign(OpenCvSharp.IplImage ipl);
+        String ReadSign(OpenCvSharp.IplImage ipl, bool isLetter);
     }
 }

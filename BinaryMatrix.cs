@@ -54,6 +54,21 @@ namespace Tagrec_S
            
         }
 
+        public void dumpToFile(String filename)
+        {
+            using (StreamWriter writer = new StreamWriter(filename))
+            {
+                for (int i = 0; i < WIDTH; ++i)
+                {
+                    for (int j = 0; j < HEIGHT; ++j)
+                    {
+                        writer.Write(matrix[i,j] + " ");
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+
         public int GetPixelValue(int x, int y)
         {
             return matrix[x, y];

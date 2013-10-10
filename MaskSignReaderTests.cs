@@ -13,8 +13,8 @@ namespace Tagrec_S
     public class MaskSignReaderTests
     {
         // TODO: remove it, take from MaskSignReader
-        public string[] signs = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                                 "A", "B", "C", "E", "H", "I", "K", "M", "O", "P", "T", "X"};
+        public string[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        public string[] letters = {"A", "B", "C", "E", "H", "I", "K", "M", "O", "P", "T", "X"};
 
 
         [Test]
@@ -44,16 +44,28 @@ namespace Tagrec_S
         [Test]
         public void testFindBestMatches()
         {
-            foreach (var sign in signs)
+            foreach (var digit in digits)
             {
-                if (File.Exists(sign + ".txt"))
+                if (File.Exists(digit + ".txt"))
                 {
-                    BinaryMatrix matrix = new BinaryMatrix(sign + ".txt");
+                    BinaryMatrix matrix = new BinaryMatrix(digit + ".txt");
                     MaskSignReader signReader = new MaskSignReader();
 
-                    Assert.AreEqual(signReader.FindBestMatches(matrix), sign);
+                    Assert.AreEqual(signReader.FindBestDigitMatches(matrix), digit);
                 }
             }
+
+            foreach (var letter in letters)
+            {
+                if (File.Exists(letter + ".txt"))
+                {
+                    BinaryMatrix matrix = new BinaryMatrix(letter + ".txt");
+                    MaskSignReader signReader = new MaskSignReader();
+
+                    Assert.AreEqual(signReader.FindBestLetterMatches(matrix), letter);
+                }
+            }
+
         }
     }
 }

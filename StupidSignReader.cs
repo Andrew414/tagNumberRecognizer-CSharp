@@ -8,6 +8,6 @@ namespace Tagrec_S
 {
     class StupidSignReader : ISignReader
     {
-        public String ReadSign(OpenCvSharp.IplImage bmp) { return "A"; }
+        public String ReadSign(OpenCvSharp.IplImage bmp, bool isLetter) { return "A"; }
     }
 }

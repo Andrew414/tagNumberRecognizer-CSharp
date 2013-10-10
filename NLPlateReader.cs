@@ -31,6 +31,10 @@ namespace Tagrec_S
 
     class NLPlateReader : IPlateReader
     {
+        public const int DigitsAmountInFirstGroup = 4;
+        public const int LettersAmountInSecondGroup = 2;
+        public const int DigitsAmountInThirdGroup = 1;
+
         public NLPlateReader(/*TagrecSForm form*/)
         {
 
@@ -189,16 +193,44 @@ namespace Tagrec_S
         {
             String finalNumber = "";
 
-            foreach (var i in infos)
+            int begin = 0;
+            for (int i = begin; i < begin + DigitsAmountInFirstGroup; ++i)
             {
-                Rectangle next = ConvertBox2DToRectangle(i.Box);
+                Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
                 ipl.SetROI(next.Left, next.Top,
                     next.Width, next.Height);
                 IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
                 ipl.Copy(justSign);
                 ipl.ResetROI();
 
-                finalNumber += reader.ReadSign(justSign);
+                finalNumber += reader.ReadSign(justSign, false);    
+            }
+
+            begin = DigitsAmountInFirstGroup;
+            for (int i = begin; i < begin + LettersAmountInSecondGroup; ++i)
+            {
+                Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
+                ipl.SetROI(next.Left, next.Top,
+                    next.Width, next.Height);
+                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
+                ipl.Copy(justSign);
+                ipl.ResetROI();
+
+                finalNumber += reader.ReadSign(justSign, true);    
+            }
+
+            begin += LettersAmountInSecondGroup;
+
+            for (int i = begin; i < begin + DigitsAmountInThirdGroup; ++i)
+            {
+                Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
+                ipl.SetROI(next.Left, next.Top,
+                    next.Width, next.Height);
+                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
+                ipl.Copy(justSign);
+                ipl.ResetROI();
+
+                finalNumber += reader.ReadSign(justSign, false);
             }
 
             return finalNumber;
