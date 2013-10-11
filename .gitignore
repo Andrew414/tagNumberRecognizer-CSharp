@@ -216,3 +216,5 @@ pip-log.txt
 
 #EmguCV and OpenCV
 emgucv/
+
+*.userprefs
