@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tagrec_S</RootNamespace>
     <AssemblyName>Tagrec S</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,33 +33,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files (x86)\NLog\.NET Framework 4.0\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files (x86)\NUnit 2.6.2\bin\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenCvSharp">
-      <HintPath>..\..\..\..\temp\opencv\csharp\OpenCvSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Emgu.CV">
+      <HintPath>emgucv\bin\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.GPU">
+      <HintPath>emgucv\bin\Emgu.CV.GPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util">
+      <HintPath>emgucv\bin\Emgu.Util.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryMatrix.cs" />
-    <Compile Include="BinaryMatrixTest.cs" />
     <Compile Include="MARPlateFinder.cs" />
-    <Compile Include="MaskSignReaderTests.cs" />
     <Compile Include="NLPlateReader.cs" />
     <Compile Include="MaskSignReader.cs" />
     <Compile Include="IPlateFinder.cs" />
@@ -87,7 +83,6 @@
     <EmbeddedResource Include="TagrecSForm.resx">
       <DependentUpon>TagrecSForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="NLog.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,6 +92,104 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="emgucv\bin\libcvextern.dylib">
+      <Link>libcvextern.dylib</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_bioinspired.2.9.0.dylib">
+      <Link>libopencv_bioinspired.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_calib3d.2.9.0.dylib">
+      <Link>libopencv_calib3d.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_contrib.2.9.0.dylib">
+      <Link>libopencv_contrib.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_core.2.9.0.dylib">
+      <Link>libopencv_core.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_features2d.2.9.0.dylib">
+      <Link>libopencv_features2d.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_flann.2.9.0.dylib">
+      <Link>libopencv_flann.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpu.2.9.0.dylib">
+      <Link>libopencv_gpu.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpuarithm.2.9.0.dylib">
+      <Link>libopencv_gpuarithm.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpubgsegm.2.9.0.dylib">
+      <Link>libopencv_gpubgsegm.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpufeatures2d.2.9.0.dylib">
+      <Link>libopencv_gpufeatures2d.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpufilters.2.9.0.dylib">
+      <Link>libopencv_gpufilters.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpuimgproc.2.9.0.dylib">
+      <Link>libopencv_gpuimgproc.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpuoptflow.2.9.0.dylib">
+      <Link>libopencv_gpuoptflow.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpustereo.2.9.0.dylib">
+      <Link>libopencv_gpustereo.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpuwarping.2.9.0.dylib">
+      <Link>libopencv_gpuwarping.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_highgui.2.9.0.dylib">
+      <Link>libopencv_highgui.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_imgproc.2.9.0.dylib">
+      <Link>libopencv_imgproc.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_legacy.2.9.0.dylib">
+      <Link>libopencv_legacy.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_ml.2.9.0.dylib">
+      <Link>libopencv_ml.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_nonfree.2.9.0.dylib">
+      <Link>libopencv_nonfree.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_objdetect.2.9.0.dylib">
+      <Link>libopencv_objdetect.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_ocl.2.9.0.dylib">
+      <Link>libopencv_ocl.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_optim.2.9.0.dylib">
+      <Link>libopencv_optim.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_photo.2.9.0.dylib">
+      <Link>libopencv_photo.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_softcascade.2.9.0.dylib">
+      <Link>libopencv_softcascade.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_stitching.2.9.0.dylib">
+      <Link>libopencv_stitching.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_superres.2.9.0.dylib">
+      <Link>libopencv_superres.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_video.2.9.0.dylib">
+      <Link>libopencv_video.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_videostab.2.9.0.dylib">
+      <Link>libopencv_videostab.2.9.0.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\ZedGraph.dll">
+      <Link>ZedGraph.dll</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -109,4 +202,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="opencv\" />
+  </ItemGroup>
 </Project>

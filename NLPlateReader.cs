@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenCvSharp;
 using System.Drawing;
+using Emgu.CV.Structure;
+using Emgu.CV;
 
 namespace Tagrec_S
 {
@@ -13,9 +14,9 @@ namespace Tagrec_S
         public double P;
         public double S;
 
-        public CvBox2D Box;
+        public MCvBox2D Box;
 
-        public ContourInfo(double p, double s, CvBox2D box)
+        public ContourInfo(double p, double s, MCvBox2D box)
         {
             P = p;
             S = s;
@@ -24,7 +25,7 @@ namespace Tagrec_S
 
         public int CompareTo(Object a)
         {
-            return Box.Center.X.CompareTo((a as ContourInfo).Box.Center.X);
+            return Box.center.X.CompareTo((a as ContourInfo).Box.center.X);
         }
     }
 
@@ -45,24 +46,24 @@ namespace Tagrec_S
         public bool IsNumberOrLetter(ContourInfo info)
         {
 
-            double angle = Math.Abs(info.Box.Angle);
+            double angle = Math.Abs(info.Box.angle);
 
             if (angle > 40 && angle < 50)
             {
                 return false; // little ones;
             }
 
-            if (info.Box.Size.Height > 90 && info.Box.Size.Height < 110 && angle < 5)
+            if (info.Box.size.Height > 90 && info.Box.size.Height < 110 && angle < 5)
             {
                 return true; //Just straight numbers
             }
 
-            if (info.Box.Size.Width > 90 && info.Box.Size.Width < 110 && angle > 80 && angle < 100)
+            if (info.Box.size.Width > 90 && info.Box.size.Width < 110 && angle > 80 && angle < 100)
             {
                 return true; //90-rotated ones
             }
 
-            if (angle > 65 && angle < 75 && info.Box.Size.Width > 80 && info.Box.Size.Width < 100)
+            if (angle > 65 && angle < 75 && info.Box.size.Width > 80 && info.Box.size.Width < 100)
             {
                 return true; // this is 4
             }
@@ -78,30 +79,30 @@ namespace Tagrec_S
             }
         }
 
-        public Rectangle ConvertBox2DToRectangle(CvBox2D box)
+        public Rectangle ConvertBox2DToRectangle(MCvBox2D box)
         {
-            double angle = Math.Abs(box.Angle);
+            double angle = Math.Abs(box.angle);
 
             if (angle < 5)
             {
                 return new Rectangle(
-                    (int)(box.Center.X - (box.Size.Width / 2)),
-                    (int)(box.Center.Y - (box.Size.Height / 2)),
-                    (int)(box.Size.Width), (int)(box.Size.Height));
+                    (int)(box.center.X - (box.size.Width / 2)),
+                    (int)(box.center.Y - (box.size.Height / 2)),
+                    (int)(box.size.Width), (int)(box.size.Height));
             }
             else if (angle > 80 && angle < 100)
             {
                 return new Rectangle(
-                    (int)(box.Center.X - (box.Size.Height / 2)),
-                    (int)(box.Center.Y - (box.Size.Width / 2)),
-                    (int)(box.Size.Height), (int)(box.Size.Width));
+                    (int)(box.center.X - (box.size.Height / 2)),
+                    (int)(box.center.Y - (box.size.Width / 2)),
+                    (int)(box.size.Height), (int)(box.size.Width));
             }
             else if (angle > 65 && angle < 75)
             {
                 return new Rectangle(
-                    (int)(box.Center.X - (box.Size.Height / 2) - 10),
-                    (int)(box.Center.Y - (box.Size.Width / 2) - 5),
-                    (int)(box.Size.Height) + 5, (int)(box.Size.Width) + 10);
+                    (int)(box.center.X - (box.size.Height / 2) - 10),
+                    (int)(box.center.Y - (box.size.Width / 2) - 5),
+                    (int)(box.size.Height) + 5, (int)(box.size.Width) + 10);
             }
             else
             {
@@ -136,35 +137,31 @@ namespace Tagrec_S
             }
         }
 
-        public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
+        public String ReadPlate(IImage iplImage, out List<Rectangle> rectangles)
         {
-            IplImage ipl = new IplImage(new CvSize(650, 150), iplImage.Depth, iplImage.NChannels);
-            iplImage.Resize(ipl);
+            var size = new Size (650, 150);
+            double scale = iplImage.Size.Height / 150.0;
+            Image<Bgr, Byte> ipl = ((Image<Bgr, Byte>)iplImage).Resize (scale, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
 
-            IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
-            ipl.CvtColor(gray, ColorConversion.BgrToGray);
+            Image<Gray, Byte> gray = ipl.Convert<Gray, Byte>();
 
-            IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            Image<Gray, Byte> blur = gray.SmoothBlur(5, 5);
 
-            IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
-            CvMemStorage storage = Cv.CreateMemStorage(0);
-            CvSeq<CvPoint> contours;
+            //binary.ToBitmap().Save("/Users/pavel/Downloads/test.bmp");
 
-            int count = Cv.FindContours(binary, storage, out contours);
+            List<ContourInfo> conInfo = new List<ContourInfo> ();
 
-            List<ContourInfo> conInfo = new List<ContourInfo>();
-
-            for (int i = 0; i < count; i++)
+            using (MemStorage storage = new MemStorage())
             {
-                conInfo.Add(new ContourInfo
-                    (Math.Abs(Cv.ContourPerimeter(contours)),
-                     Math.Abs(Cv.ContourArea(contours)),
-                     Cv.MinAreaRect2(contours)));
+                for (Contour<Point> contours = binary.FindContours(); contours != null; contours = contours.HNext) 
+                {
+                    Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * 0.05, storage);
 
-                contours = contours.HNext;
+                    conInfo.Add (new ContourInfo (Math.Abs (currentContour.Perimeter), 
+                                             Math.Abs (currentContour.Area), currentContour.GetMinAreaRect ()));
+                }
             }
 
             List<ContourInfo> possibleNumbersAndLetters = conInfo.Where(IsNumberOrLetter).ToList();
@@ -189,19 +186,19 @@ namespace Tagrec_S
             }
         }
 
-        public String RecognizeNumber(List<ContourInfo> infos, IplImage ipl)
+        public String RecognizeNumber(List<ContourInfo> infos, Image<Bgr, Byte> ipl)
         {
             String finalNumber = "";
-
+			// TODO: rewrite
             int begin = 0;
             for (int i = begin; i < begin + DigitsAmountInFirstGroup; ++i)
             {
                 Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
-                ipl.SetROI(next.Left, next.Top,
-                    next.Width, next.Height);
-                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
-                ipl.Copy(justSign);
-                ipl.ResetROI();
+                var defaultROI = ipl.ROI;
+                ipl.ROI = next;
+                Image<Bgr, Byte> justSign = ipl.Clone ();
+
+                ipl.ROI = defaultROI;
 
                 finalNumber += reader.ReadSign(justSign, false);    
             }
@@ -210,12 +207,11 @@ namespace Tagrec_S
             for (int i = begin; i < begin + LettersAmountInSecondGroup; ++i)
             {
                 Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
-                ipl.SetROI(next.Left, next.Top,
-                    next.Width, next.Height);
-                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
-                ipl.Copy(justSign);
-                ipl.ResetROI();
+                var defaultROI = ipl.ROI;
+                ipl.ROI = next;
+                Image<Bgr, Byte> justSign = ipl.Clone ();
 
+                ipl.ROI = defaultROI;
                 finalNumber += reader.ReadSign(justSign, true);    
             }
 
@@ -224,11 +220,11 @@ namespace Tagrec_S
             for (int i = begin; i < begin + DigitsAmountInThirdGroup; ++i)
             {
                 Rectangle next = ConvertBox2DToRectangle(infos[i].Box);
-                ipl.SetROI(next.Left, next.Top,
-                    next.Width, next.Height);
-                IplImage justSign = new IplImage(Cv.GetSize(ipl), ipl.Depth, ipl.NChannels);
-                ipl.Copy(justSign);
-                ipl.ResetROI();
+                var defaultROI = ipl.ROI;
+                ipl.ROI = next;
+                Image<Bgr, Byte> justSign = ipl.Clone ();
+
+                ipl.ROI = defaultROI;
 
                 finalNumber += reader.ReadSign(justSign, false);
             }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Emgu.CV;
 
 namespace Tagrec_S
 {
     interface ISignReader
     {
-        String ReadSign(OpenCvSharp.IplImage ipl, bool isLetter);
+       String ReadSign(IImage ipl, bool isLetter);
     }
 }

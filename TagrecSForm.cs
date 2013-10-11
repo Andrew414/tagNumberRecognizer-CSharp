@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenCvSharp;
-using System.Threading;
-using NLog;
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 
 namespace Tagrec_S
 {
     public partial class TagrecSForm : Form
     {
 
-        private CvCapture cvCapture;
+        private Capture cvCapture;
         private bool bCapturing;
         public List<Bitmap> lstBmpSavedNumbers;
         public String lastNumberSaved = "";
@@ -32,7 +27,7 @@ namespace Tagrec_S
 
         public void InitCapture()
         {
-            cvCapture = Cv.CreateCameraCapture(CaptureDevice.Any);
+            cvCapture = new Capture(CaptureType.ANY);
 
             if (cvCapture != null)
             {
@@ -66,20 +61,21 @@ namespace Tagrec_S
                 return;
             }
 
-            Application.DoEvents();
+            //Application.DoEvents();
 
-            IplImage snapshot = cvCapture.QueryFrame();
+            Image<Bgr, Byte> snapshot = cvCapture.QueryFrame();
             Bitmap bmpSnapshot = snapshot.ToBitmap();
             //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
             Rectangle numberRectangle = finder.FindRectangle(snapshot);
 
             if (numberRectangle != new Rectangle())
             {
-                snapshot.SetROI(numberRectangle.Left, numberRectangle.Top,
-                    numberRectangle.Width, numberRectangle.Height);
-                IplImage justNumber = new IplImage(Cv.GetSize(snapshot), snapshot.Depth, snapshot.NChannels);
-                snapshot.Copy(justNumber);
-                snapshot.ResetROI();
+                var defaultRoi = snapshot.ROI;
+                snapshot.ROI = numberRectangle;
+
+                var justNumber = snapshot.Clone ();
+
+                snapshot.ROI = defaultRoi;
 
                 List<Rectangle> numbers;
                 String carNumber = reader.ReadPlate(justNumber, out numbers);
@@ -139,7 +135,7 @@ namespace Tagrec_S
 
             pbxCurrentImage.BackgroundImage = bmpSnapshot;
 
-            Application.DoEvents();
+            //Application.DoEvents();
         }
 
         private void TagrecSForm_FormClosing(object sender, FormClosingEventArgs e)
