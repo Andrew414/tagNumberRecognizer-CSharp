@@ -9,6 +9,5 @@ namespace Tagrec_S
             return new System.Drawing.Rectangle(0,0,200,50);
         }
 
-        public IImage Transform(IImage ipl) { return ipl; }
     }
 }

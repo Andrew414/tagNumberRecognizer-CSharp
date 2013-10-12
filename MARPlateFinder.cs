@@ -50,7 +50,7 @@ namespace Tagrec_S
 
             Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
-            //Image<Gray, Byte> canny = binary.Canny(0, 100);
+            Image<Gray, Byte> canny = binary.Canny(0, 100);
 
             MCvBox2D candidate = new MCvBox2D();
             bool candidateFound = false;
@@ -58,7 +58,7 @@ namespace Tagrec_S
 
             using (MemStorage storage = new MemStorage())
             {
-                for (Contour<Point> contours = binary.FindContours(); contours != null; contours = contours.HNext)
+                for (Contour<Point> contours = canny.FindContours(); contours != null; contours = contours.HNext)
                 {
                     Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * 0.05, storage);
 
@@ -98,19 +98,5 @@ namespace Tagrec_S
             return new Rectangle();
         }
 
-        public IImage Transform(IImage ipl)
-        {
-            var gray = new Image<Gray, Byte>(ipl.Size);
-
-            /*var blur = gray.SmoothBlur (5, 5);
-
-            var binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
-
-            var canny = binary.Canny(0, 100);
-
-             var sobel = canny.Sobel (1, 1, 3);*/
-
-            return gray;
-        }
     }
 }
