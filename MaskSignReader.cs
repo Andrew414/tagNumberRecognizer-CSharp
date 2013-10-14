@@ -69,7 +69,7 @@ namespace Tagrec_S
         {
             int max = -1;
             String answer = "";
-            matrix.dumpToFile("zzzXXX.txt");
+
             foreach (var i in lettersDict)
             {
                 if (Matches(i.Value, matrix) > max)

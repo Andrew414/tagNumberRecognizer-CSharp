@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
 using System.Threading;
-using NLog;
 
 namespace Tagrec_S
 {
@@ -24,16 +23,22 @@ namespace Tagrec_S
         IPlateFinder finder;
         IPlateReader reader;
 
-        public TagrecSForm()
+        public TagrecSForm(String filename = "")
         {
             InitializeComponent();
-            InitCapture();
+            InitCapture(filename);
         }
 
-        public void InitCapture()
+        public void InitCapture(String filename)
         {
-            cvCapture = Cv.CreateCameraCapture(CaptureDevice.Any);
-
+            if (filename == "")
+            {
+                cvCapture = Cv.CreateCameraCapture(CaptureDevice.Any);
+            }
+            else
+            {
+                cvCapture = Cv.CreateFileCapture(filename);
+            }
             if (cvCapture != null)
             {
                 tmrCapture.Enabled = true;
@@ -67,8 +72,12 @@ namespace Tagrec_S
             }
 
             Application.DoEvents();
-
             IplImage snapshot = cvCapture.QueryFrame();
+
+            if (snapshot == null)
+            {
+                return;
+            }
             Bitmap bmpSnapshot = snapshot.ToBitmap();
             //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
             Rectangle numberRectangle = finder.FindRectangle(snapshot);
