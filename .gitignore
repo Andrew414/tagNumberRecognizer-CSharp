@@ -215,6 +215,6 @@ pip-log.txt
 .mr.developer.cfg
 
 #EmguCV and OpenCV
-emgucv/
+/emgucv/
 
 *.userprefs

@@ -84,6 +84,57 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="CaptureProcessor.cs" />
+    <None Include="emgucv\bin\libopencv_core.2.9.0.dylib">
+      <Link>libopencv_core.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_highgui.2.9.0.dylib">
+      <Link>libopencv_highgui.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libcvextern.dylib">
+      <Link>libcvextern.dylib</Link>
+    </None>
+    <None Include="emgucv\bin\libopencv_calib3d.2.9.0.dylib">
+      <Link>libopencv_calib3d.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_contrib.2.9.0.dylib">
+      <Link>libopencv_contrib.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_features2d.2.9.0.dylib">
+      <Link>libopencv_features2d.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_flann.2.9.0.dylib">
+      <Link>libopencv_flann.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_gpu.2.9.0.dylib">
+      <Link>libopencv_gpu.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_imgproc.2.9.0.dylib">
+      <Link>libopencv_imgproc.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_legacy.2.9.0.dylib">
+      <Link>libopencv_legacy.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_ml.2.9.0.dylib">
+      <Link>libopencv_ml.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_objdetect.2.9.0.dylib">
+      <Link>libopencv_objdetect.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="emgucv\bin\libopencv_video.2.9.0.dylib">
+      <Link>libopencv_video.2.9.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
