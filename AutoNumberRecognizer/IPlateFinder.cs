@@ -1,8 +1,8 @@
 ﻿using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    interface IPlateFinder
+    public interface IPlateFinder
     {
         System.Drawing.Rectangle FindRectangle(IImage ipl);
     }

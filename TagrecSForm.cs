@@ -1,57 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Emgu.CV.Structure;
+using AutoNumberRecognizer;
 
 namespace Tagrec_S
 {
     public partial class TagrecSForm : Form
     {
 
-        private Capture cvCapture;
         private bool bCapturing;
-        public List<Bitmap> lstBmpSavedNumbers;
-        public String lastNumberSaved = "";
 
-        IPlateFinder finder;
-        IPlateReader reader;
+        private CaptureProcessor capture;
 
-        public TagrecSForm()
+        public TagrecSForm (string filename = "")
         {
             InitializeComponent();
-            InitCapture();
-        }
 
-        public void InitCapture()
-        {
-            cvCapture = new Capture(CaptureType.ANY);
+            capture = new CaptureProcessor (filename);
 
-            if (cvCapture != null)
+            if (capture.InitializedCorrectly)
             {
                 tmrCapture.Enabled = true;
                 bCapturing = true;
             }
-
-            lstBmpSavedNumbers = new List<Bitmap>();
-
-            finder = new MARPlateFinder ();
-            reader = new NLPlateReader();
-        }
-
-        private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
-        {
-            if (x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
-            {
-                bmp.SetPixel(x, y, color);
-            }
-        }
-
-        private void ProcessRecognizedNumber()
-        {
-
         }
 
         private void tmrCapture_Tick(object sender, EventArgs e)
@@ -63,84 +36,30 @@ namespace Tagrec_S
 
             //Application.DoEvents();
 
-            Image<Bgr, Byte> snapshot = cvCapture.QueryFrame();
-            Bitmap bmpSnapshot = snapshot.ToBitmap();
-            //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
-            Rectangle numberRectangle = finder.FindRectangle(snapshot);
+            capture.MakeCapture ();
 
-            if (numberRectangle != new Rectangle())
+            if(capture.lastNumberSaved == "")
             {
-                var defaultRoi = snapshot.ROI;
-                snapshot.ROI = numberRectangle;
-
-                var justNumber = snapshot.Clone ();
-
-                snapshot.ROI = defaultRoi;
-
-                List<Rectangle> numbers;
-                String carNumber = reader.ReadPlate(justNumber, out numbers);
-
-                Color BorderColor;
-
-                if (carNumber != "")
-                {
-                    ProcessRecognizedNumber();
-                    BorderColor = Color.Green;
-
-                    if (carNumber != lastNumberSaved)
-                    {
-                        ilsSavedImages.Images.Add(bmpSnapshot);
-                        DateTime now = DateTime.Now;
-                        lstSavedNumbers.Items.Add(new ListViewItem(now.Year.ToString() + "-" + now.Month.ToString() + "-"
-                         + now.Day.ToString() + " " + now.Hour + ":" + now.Minute + " " + carNumber, lstBmpSavedNumbers.Count));
-                        lstBmpSavedNumbers.Add(bmpSnapshot);
-
-                        lastNumberSaved = carNumber;
-                    }
-
-                    this.Text = carNumber;
-                }
-                else
-                {
-                    BorderColor = Color.Red;
-                    this.Text = "Searching...";
-                }
-
-                int BorderSize = 5;
-
-                for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++)
-                {
-                    for (int j = 0; j < BorderSize; j++)
-                    {
-                        SafeSetPixel(ref bmpSnapshot, numberRectangle.Left + j, i, BorderColor);
-                        SafeSetPixel(ref bmpSnapshot, numberRectangle.Right - j, i, BorderColor);
-                    }
-                }
-
-                for (int i = numberRectangle.Left; i < numberRectangle.Right; i++)
-                {
-                    for (int j = 0; j < BorderSize; j++)
-                    {
-                        SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Top + j, BorderColor);
-                        SafeSetPixel(ref bmpSnapshot, i, numberRectangle.Bottom - j, BorderColor);
-                    }
-                }
-
-                //bmpSnapshot = justNumber.ToBitmap();
-            }
-            else
+                Text = "Searching...";
+            }            
+            else 
             {
-                this.Text = "Searching...";
+                DateTime now = DateTime.Now;
+                lstSavedNumbers.Items.Add(new ListViewItem(now.Year.ToString() + "-" + now.Month.ToString() + "-"
+                                                           + now.Day.ToString() + " " + now.Hour + ":" + now.Minute + " " + capture.lastNumberSaved, capture.lstBmpSavedNumbers.Count));
+
+                ilsSavedImages.Images.Add(capture.lstBmpSavedNumbers.Last());
+                Text = capture.lastNumberSaved;
             }
 
-            pbxCurrentImage.BackgroundImage = bmpSnapshot;
+            pbxCurrentImage.BackgroundImage = capture.bmpSnapshot;
 
             //Application.DoEvents();
         }
 
         private void TagrecSForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            cvCapture = null;
+            capture.Dispose ();
         }
 
         private void StartCaptureTimer()
@@ -181,7 +100,7 @@ namespace Tagrec_S
 
             if (lstSavedNumbers.FocusedItem != null)
             {
-                pbxCurrentImage.BackgroundImage = lstBmpSavedNumbers[lstSavedNumbers.FocusedItem.Index];
+                pbxCurrentImage.BackgroundImage = capture.lstBmpSavedNumbers[lstSavedNumbers.FocusedItem.Index];
             }
         }
 
@@ -202,7 +121,7 @@ namespace Tagrec_S
             {
                 if (sfdSaveSelected.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    lstBmpSavedNumbers[lstSavedNumbers.FocusedItem.Index].Save(sfdSaveSelected.FileName);
+                    capture.lstBmpSavedNumbers[lstSavedNumbers.FocusedItem.Index].Save(sfdSaveSelected.FileName);
                 }
             }
         }

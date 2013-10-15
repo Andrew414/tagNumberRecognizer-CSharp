@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class StupidPlateReader : IPlateReader
+    public class StupidPlateReader : IPlateReader
     {
         public String ReadPlate(IImage ipl, out List<System.Drawing.Rectangle> rects)
         {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
  using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    interface IPlateReader
+    public interface IPlateReader
     {
         String ReadPlate(IImage ipl, out List<System.Drawing.Rectangle> rects);
     }

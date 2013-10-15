@@ -4,9 +4,9 @@ using System;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class MaskSignReader : ISignReader
+    public class MaskSignReader : ISignReader
     {
         public MaskSignReader()
         {

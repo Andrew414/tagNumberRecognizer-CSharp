@@ -1,9 +1,9 @@
 ﻿using System;
 using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class StupidSignReader : ISignReader
+    public class StupidSignReader : ISignReader
     {
         public String ReadSign(IImage bmp, bool isLetter) { return "A"; }
     }

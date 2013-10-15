@@ -51,18 +51,9 @@
     <Reference Include="Emgu.Util">
       <HintPath>emgucv\bin\Emgu.Util.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryMatrix.cs" />
-    <Compile Include="MARPlateFinder.cs" />
-    <Compile Include="NLPlateReader.cs" />
-    <Compile Include="MaskSignReader.cs" />
-    <Compile Include="IPlateFinder.cs" />
-    <Compile Include="IPlateReader.cs" />
-    <Compile Include="ISignReader.cs" />
-    <Compile Include="StupidPlateFinder.cs" />
-    <Compile Include="StupidPlateReader.cs" />
-    <Compile Include="StupidSignReader.cs" />
     <Compile Include="TagrecSForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,104 +83,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="emgucv\bin\libcvextern.dylib">
-      <Link>libcvextern.dylib</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="emgucv\bin\libopencv_bioinspired.2.9.0.dylib">
-      <Link>libopencv_bioinspired.2.9.0.dylib</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="emgucv\bin\libopencv_calib3d.2.9.0.dylib">
-      <Link>libopencv_calib3d.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_contrib.2.9.0.dylib">
-      <Link>libopencv_contrib.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_core.2.9.0.dylib">
-      <Link>libopencv_core.2.9.0.dylib</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="emgucv\bin\libopencv_features2d.2.9.0.dylib">
-      <Link>libopencv_features2d.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_flann.2.9.0.dylib">
-      <Link>libopencv_flann.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpu.2.9.0.dylib">
-      <Link>libopencv_gpu.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpuarithm.2.9.0.dylib">
-      <Link>libopencv_gpuarithm.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpubgsegm.2.9.0.dylib">
-      <Link>libopencv_gpubgsegm.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpufeatures2d.2.9.0.dylib">
-      <Link>libopencv_gpufeatures2d.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpufilters.2.9.0.dylib">
-      <Link>libopencv_gpufilters.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpuimgproc.2.9.0.dylib">
-      <Link>libopencv_gpuimgproc.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpuoptflow.2.9.0.dylib">
-      <Link>libopencv_gpuoptflow.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpustereo.2.9.0.dylib">
-      <Link>libopencv_gpustereo.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_gpuwarping.2.9.0.dylib">
-      <Link>libopencv_gpuwarping.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_highgui.2.9.0.dylib">
-      <Link>libopencv_highgui.2.9.0.dylib</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="emgucv\bin\libopencv_imgproc.2.9.0.dylib">
-      <Link>libopencv_imgproc.2.9.0.dylib</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="emgucv\bin\libopencv_legacy.2.9.0.dylib">
-      <Link>libopencv_legacy.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_ml.2.9.0.dylib">
-      <Link>libopencv_ml.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_nonfree.2.9.0.dylib">
-      <Link>libopencv_nonfree.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_objdetect.2.9.0.dylib">
-      <Link>libopencv_objdetect.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_ocl.2.9.0.dylib">
-      <Link>libopencv_ocl.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_optim.2.9.0.dylib">
-      <Link>libopencv_optim.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_photo.2.9.0.dylib">
-      <Link>libopencv_photo.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_softcascade.2.9.0.dylib">
-      <Link>libopencv_softcascade.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_stitching.2.9.0.dylib">
-      <Link>libopencv_stitching.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_superres.2.9.0.dylib">
-      <Link>libopencv_superres.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_video.2.9.0.dylib">
-      <Link>libopencv_video.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\libopencv_videostab.2.9.0.dylib">
-      <Link>libopencv_videostab.2.9.0.dylib</Link>
-    </None>
-    <None Include="emgucv\bin\ZedGraph.dll">
-      <Link>ZedGraph.dll</Link>
-    </None>
+    <Compile Include="CaptureProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -203,6 +97,9 @@
   </Target>
   -->
   <ItemGroup>
-    <Folder Include="opencv\" />
+    <ProjectReference Include="AutoNumberRecognizer\AutoNumberRecognizer.csproj">
+      <Project>{5E5B304B-D3E4-44D8-A015-CF114ABD00DE}</Project>
+      <Name>AutoNumberRecognizer</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

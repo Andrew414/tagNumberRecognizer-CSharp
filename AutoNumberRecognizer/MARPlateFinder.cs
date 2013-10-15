@@ -3,9 +3,9 @@ using System.Drawing;
 using Emgu.CV.Structure;
 using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class MARPlateFinder : IPlateFinder
+    public class MARPlateFinder : IPlateFinder
     {
         public MARPlateFinder()
         {

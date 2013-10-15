@@ -7,9 +7,9 @@ using System.Drawing;
 using Emgu.CV.Structure;
 using Emgu.CV;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class ContourInfo : IComparable
+    public class ContourInfo : IComparable
     {
         public double P;
         public double S;
@@ -30,7 +30,7 @@ namespace Tagrec_S
     }
 
 
-    class NLPlateReader : IPlateReader
+    public class NLPlateReader : IPlateReader
     {
         public const int DigitsAmountInFirstGroup = 4;
         public const int LettersAmountInSecondGroup = 2;

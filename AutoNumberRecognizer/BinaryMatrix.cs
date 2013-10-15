@@ -3,9 +3,9 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 
-namespace Tagrec_S
+namespace AutoNumberRecognizer
 {
-    class BinaryMatrix
+    public class BinaryMatrix
     {
         public const int WIDTH = 120;
         public const int HEIGHT = 200;
