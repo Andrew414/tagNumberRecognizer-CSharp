@@ -139,9 +139,8 @@ namespace Tagrec_S
 
         public String ReadPlate(IImage iplImage, out List<Rectangle> rectangles)
         {
-            var size = new Size (650, 150);
-            double scale = iplImage.Size.Height / 150.0;
-            Image<Bgr, Byte> ipl = ((Image<Bgr, Byte>)iplImage).Resize (scale, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
+
+            Image<Bgr, Byte> ipl = ((Image<Bgr, Byte>)iplImage).Resize (650, 150, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
 
             Image<Gray, Byte> gray = ipl.Convert<Gray, Byte>();
 
@@ -149,7 +148,7 @@ namespace Tagrec_S
 
             Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
 
-            //binary.ToBitmap().Save("/Users/pavel/Downloads/test.bmp");
+            binary.ToBitmap().Save("/Users/pavel/Downloads/test.bmp");
 
             List<ContourInfo> conInfo = new List<ContourInfo> ();
 

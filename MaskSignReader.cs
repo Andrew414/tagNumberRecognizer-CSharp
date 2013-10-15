@@ -100,13 +100,14 @@ namespace Tagrec_S
 
         public String ReadSign(IImage ipl, bool isLetter)
         {
-            var size = new Size(120, 200);
-
-            Image<Gray, Byte> gray = new Image<Gray, Byte>(size);
+            Image<Gray, Byte> gray = ((Image<Bgr, Byte>)ipl).Resize (120, 200, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC).Convert<Gray, Byte>();//new Image<Gray, Byte>(size);
 
             Image<Gray, Byte> blur = gray.SmoothBlur(5, 5);
 
             Image<Gray, Byte> binary = blur.ThresholdBinary(new Gray(149), new Gray(255));
+
+
+            binary.ToBitmap ().Save ("/Users/pavel/Downloads/number_test.bmp");
 
             BinaryMatrix sign = new BinaryMatrix(binary.ToBitmap());
 
