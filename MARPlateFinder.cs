@@ -85,7 +85,8 @@ namespace Tagrec_S
                 {
                     if (CheckPlate(ipl, box))
                     {
-                        // написать коментарий
+                        // Определяет хорошесть прямоугольника Хорошесть прямо пропорциональна его размеру (длине). 
+                        // И обратно пропорциональна его повороту.
                         double newSize = box.Size.Width / (Math.Abs(box.Angle) + 2.0);
                         if (newSize > candidateSize) 
                         {
@@ -102,9 +103,9 @@ namespace Tagrec_S
             if (candidateFound)
             {
                 return new Rectangle(
-                (int)(candidate.Center.X - (candidate.Size.Width / 2)), 
-                (int)(candidate.Center.Y - (candidate.Size.Height / 2)), 
-                (int)(candidate.Size.Width), (int)(candidate.Size.Height));
+                (int)(candidate.Center.X - (candidate.Size.Width / 1.9)), 
+                (int)(candidate.Center.Y - (candidate.Size.Height / 1.9)), 
+                (int)(candidate.Size.Width * 1.1), (int)(candidate.Size.Height * 1.1));
             }
 
             return new Rectangle();
