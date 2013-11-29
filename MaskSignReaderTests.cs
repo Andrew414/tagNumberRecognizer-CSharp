@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Tagrec_S
 {
     using NUnit.Framework;
+    using OpenCvSharp;
     using System.Drawing;
     using System.IO;
     [TestFixture]
@@ -16,6 +17,23 @@ namespace Tagrec_S
         public string[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
         public string[] letters = {"A", "B", "C", "E", "H", "I", "K", "M", "O", "P", "T", "X"};
 
+        static bool FileEquals(string path1, string path2)
+        {
+            byte[] file1 = File.ReadAllBytes(path1);
+            byte[] file2 = File.ReadAllBytes(path2);
+            if (file1.Length == file2.Length)
+            {
+                for (int i = 0; i < file1.Length; i++)
+                {
+                    if (file1[i] != file2[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
 
         [Test]
         public void testMatches()
@@ -65,7 +83,29 @@ namespace Tagrec_S
                     Assert.AreEqual(signReader.FindBestLetterMatches(matrix), letter);
                 }
             }
+        }
 
+        private String imageFileName = "tests\\convertImageTest.jpg";
+        private String imageFileNameResult = "tests\\MaskSignReaderConvertImageTestResult.jpg";
+
+        [Test]
+        public void testConvertImages()
+        {
+            IplImage image = MaskSignReader.ConvertImage(new IplImage(imageFileName));
+            String testedFileName = new Random().Next() + ".jpg";
+            image.ToBitmap().Save(testedFileName);
+            Assert.True(FileEquals(testedFileName, imageFileNameResult));
+            File.Delete(testedFileName);
+        }
+
+        [Test]
+        public void testReadSign()
+        {
+            MaskSignReader reader = new MaskSignReader();
+            Assert.True(reader.ReadSign(new IplImage("tests\\A.jpg"), true) == "A");
+            Assert.True(reader.ReadSign(new IplImage("tests\\C.jpg"), true) == "C");
+            Assert.True(reader.ReadSign(new IplImage("tests\\0.jpg"), false) == "0");
+            Assert.True(reader.ReadSign(new IplImage("tests\\2.jpg"), false) == "2");
         }
     }
 }

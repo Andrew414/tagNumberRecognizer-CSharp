@@ -13,17 +13,22 @@ namespace Tagrec_S
         public const int WIDTH = 120;
         public const int HEIGHT = 200;
 
+        private int width = 120;
+        private int height = 200;
         private int[,] matrix = new int[WIDTH, HEIGHT];
 
-        public BinaryMatrix(String filename)
+        // covered by unit-tests
+        public BinaryMatrix(String filename, int width=120, int height = 200)
         {
-            
+            //this.width = width;
+            //this.height = height;
+            //matrix = new int[width, height];
             using (StreamReader reader = new StreamReader(filename)) {            
                 String curLine;
                 int lineInd = 0;
                 while ((curLine = reader.ReadLine()) != null)
                 {
-                    var row = curLine.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToArray();
+                    var row = curLine.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(x => Int32.Parse(x)).ToArray();
                     for (int i = 0; i < row.Length; ++i)
                     {
                         matrix[lineInd, i] = row[i];
@@ -34,14 +39,21 @@ namespace Tagrec_S
 
         }
 
+        // covered by unit-tests
         public BinaryMatrix(Bitmap bmp)
         {
-            for (int i = 0; i < bmp.Width; i++)
+            //width = bmp.Width;
+            //height = bmp.Height;
+            //matrix = new int[width, height];
+            for (int i = 0; i < width; i++)
             {
-                for (int j = 0; j < bmp.Height; j++)
+                for (int j = 0; j < height; j++)
                 {
+                    Color color = bmp.GetPixel(i, j);
                     // Mother fucker hack
-                    if (bmp.GetPixel(i, j).R != 255)
+                    if ((color.R - 255) * (color.R - 255) +
+                        (color.G - 255) * (color.G - 255) +
+                        (color.B - 255) * (color.B - 255) > 20 * 20 *3)
                     {
                         matrix[i, j] = 1;
                     }
@@ -54,13 +66,14 @@ namespace Tagrec_S
            
         }
 
+        // covered with unit-tests
         public void dumpToFile(String filename)
         {
             using (StreamWriter writer = new StreamWriter(filename))
             {
-                for (int i = 0; i < WIDTH; ++i)
+                for (int i = 0; i < width; ++i)
                 {
-                    for (int j = 0; j < HEIGHT; ++j)
+                    for (int j = 0; j < height; ++j)
                     {
                         writer.Write(matrix[i,j] + " ");
                     }
@@ -69,11 +82,11 @@ namespace Tagrec_S
             }
         }
 
+        // covered with unit-tests
         public int GetPixelValue(int x, int y)
         {
             return matrix[x, y];
         }
-
 
     }
 }

@@ -8,11 +8,10 @@ namespace Tagrec_S
 {
     class StupidPlateFinder : IPlateFinder
     {
-        public System.Drawing.Rectangle FindRectangle(OpenCvSharp.IplImage ipl)
+        public List<OpenCvSharp.CvBox2D> FindRectangles(OpenCvSharp.IplImage ipl)
         {
-            return new System.Drawing.Rectangle(0,0,200,50);
+            return new List<OpenCvSharp.CvBox2D>();
         }
 
-        public OpenCvSharp.IplImage Transform(OpenCvSharp.IplImage ipl) { return ipl; }
     }
 }

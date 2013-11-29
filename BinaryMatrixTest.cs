@@ -15,6 +15,40 @@ namespace Tagrec_S
         private String testFileName = "testFile.txt";
 
         [Test]
+        public void dumpToFile()
+        {
+            using (StreamWriter writer = new StreamWriter(testFileName))
+            {
+
+                for (int i = 0; i < BinaryMatrix.WIDTH; ++i)
+                {
+                    for (int j = 0; j < BinaryMatrix.HEIGHT; ++j)
+                    {
+                        writer.Write(new Random().Next() % 2 + " ");
+                    }
+                    writer.WriteLine();
+                }
+            }
+            BinaryMatrix matrix = new BinaryMatrix(testFileName);
+
+            String outFileName = "out" + testFileName;
+
+            matrix.dumpToFile("out" + testFileName);
+
+            BinaryMatrix dumpedMatrix = new BinaryMatrix(outFileName);
+
+            for (int i = 0; i < BinaryMatrix.WIDTH; ++i)
+            {
+                for (int j = 0; j < BinaryMatrix.HEIGHT; ++j)
+                {
+                    Assert.AreEqual(dumpedMatrix.GetPixelValue(i, j), matrix.GetPixelValue(i, j));
+                }
+            }
+            //File.Delete(outFileName);
+            //File.Delete(testFileName);
+        }
+
+        [Test]
         public void initFromFile()
         {
 

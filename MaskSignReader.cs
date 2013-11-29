@@ -48,6 +48,7 @@ namespace Tagrec_S
             LoadToDict(lettersDict, letters, folder);
         }
 
+        //covered by unit-tests
         public static int Matches(BinaryMatrix bmp1, BinaryMatrix bmp2)
         {
             int answer = 0;
@@ -65,6 +66,7 @@ namespace Tagrec_S
             return answer;
         }
 
+        // covered by unit-tests
         public String FindBestLetterMatches(BinaryMatrix matrix)
         {
             int max = -1;
@@ -83,6 +85,7 @@ namespace Tagrec_S
 
         }
 
+        // covered by unit-tests
         public String FindBestDigitMatches(BinaryMatrix matrix)
         {
             int max = -1;
@@ -101,7 +104,8 @@ namespace Tagrec_S
 
         }
 
-        public String ReadSign(IplImage ipl, bool isLetter)
+        // convert by unit-tests
+        public static IplImage ConvertImage(IplImage ipl)
         {
             IplImage resized = new IplImage(new CvSize(120, 200), ipl.Depth, ipl.NChannels);
             ipl.Resize(resized);
@@ -115,6 +119,13 @@ namespace Tagrec_S
             IplImage binary = new IplImage(resized.Size, BitDepth.U8, 1);
             blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
 
+            return binary;
+        }
+
+        // convert by unit-tests
+        public String ReadSign(IplImage ipl, bool isLetter)
+        {
+            IplImage binary = ConvertImage(ipl);
             BinaryMatrix sign = new BinaryMatrix(binary.ToBitmap());
 
             if (isLetter) {

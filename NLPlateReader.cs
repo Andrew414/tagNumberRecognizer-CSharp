@@ -78,7 +78,7 @@ namespace Tagrec_S
             }
         }
 
-        public Rectangle ConvertBox2DToRectangle(CvBox2D box)
+        public static Rectangle ConvertBox2DToRectangle(CvBox2D box)
         {
             double angle = Math.Abs(box.Angle);
 
@@ -178,7 +178,6 @@ namespace Tagrec_S
             }
 
             rectangles = null;
-
             if (possibleNumbersAndLetters.Count == 7)
             {
                 return RecognizeNumber(possibleNumbersAndLetters, ipl).Insert(4, " ").Insert(7, "-");

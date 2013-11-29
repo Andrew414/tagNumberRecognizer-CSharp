@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
+using System.IO;
 using System.Threading;
 
 namespace Tagrec_S
@@ -51,6 +52,36 @@ namespace Tagrec_S
             reader = new NLPlateReader();
         }
 
+        public static IplImage getNumberAndRotatePerspective(CvBox2D box, IplImage image)
+        {
+            CvPoint2D32f[] dstPnt = new CvPoint2D32f[4];
+
+            float leftX = box.Center.X - box.Size.Width / (float)2;
+            float bottomY = box.Center.Y - box.Size.Height / (float)2;
+
+            dstPnt[1] = new CvPoint2D32f(0, 0);
+            dstPnt[2] = new CvPoint2D32f(box.Size.Width, 0);
+            dstPnt[0] = new CvPoint2D32f(0, box.Size.Height);
+            dstPnt[3] = new CvPoint2D32f(box.Size.Width, box.Size.Height);
+            
+            CvBox2D newBox = box;
+            newBox.Center.X -= leftX;
+            newBox.Center.Y -= bottomY;
+
+            CvMat mapMatrix = Cv.GetPerspectiveTransform(newBox.BoxPoints(), dstPnt);
+
+            image.SetROI((int)leftX, (int)bottomY, (int)box.Size.Width, (int)box.Size.Height);
+            IplImage justNumber = new IplImage(Cv.GetSize(image), image.Depth, image.NChannels);
+            image.Copy(justNumber);
+            image.ResetROI();
+
+            IplImage dstImage = justNumber.Clone();
+
+            Cv.WarpPerspective(justNumber, dstImage, mapMatrix);
+
+            return dstImage;
+        }
+
         private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
         {
             if (x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
@@ -62,6 +93,17 @@ namespace Tagrec_S
         private void ProcessRecognizedNumber()
         {
 
+        }
+
+        public static IplImage getJustNumberFromImage(IplImage snapshot, Rectangle numberRectangle)
+        {
+            snapshot.SetROI(numberRectangle.Left, numberRectangle.Top,
+                numberRectangle.Width, numberRectangle.Height);
+            IplImage justNumber = new IplImage(Cv.GetSize(snapshot), snapshot.Depth, snapshot.NChannels);
+            snapshot.Copy(justNumber);
+            snapshot.ResetROI();
+
+            return justNumber;
         }
 
         private void tmrCapture_Tick(object sender, EventArgs e)
@@ -79,16 +121,13 @@ namespace Tagrec_S
                 return;
             }
             Bitmap bmpSnapshot = snapshot.ToBitmap();
-            //Bitmap bmpSnapshot = finder.Transform(snapshot).ToBitmap();
-            Rectangle numberRectangle = finder.FindRectangle(snapshot);
+            List<CvBox2D> rectangles = finder.FindRectangles(snapshot);
 
-            if (numberRectangle != new Rectangle())
+            foreach (CvBox2D boxNumberRectangle in rectangles)
             {
-                snapshot.SetROI(numberRectangle.Left, numberRectangle.Top,
-                    numberRectangle.Width, numberRectangle.Height);
-                IplImage justNumber = new IplImage(Cv.GetSize(snapshot), snapshot.Depth, snapshot.NChannels);
-                snapshot.Copy(justNumber);
-                snapshot.ResetROI();
+                
+                IplImage justNumber = getNumberAndRotatePerspective(boxNumberRectangle, snapshot);
+                IplImage notRotated = getJustNumberFromImage(snapshot, NLPlateReader.ConvertBox2DToRectangle(boxNumberRectangle));
 
                 List<Rectangle> numbers;
                 String carNumber = reader.ReadPlate(justNumber, out numbers);
@@ -121,6 +160,7 @@ namespace Tagrec_S
 
                 int BorderSize = 5;
 
+                Rectangle numberRectangle = NLPlateReader.ConvertBox2DToRectangle(boxNumberRectangle);
                 for (int i = numberRectangle.Top; i < numberRectangle.Bottom; i++)
                 {
                     for (int j = 0; j < BorderSize; j++)
@@ -139,9 +179,9 @@ namespace Tagrec_S
                     }
                 }
 
-                //bmpSnapshot = justNumber.ToBitmap();
             }
-            else
+            
+            if (rectangles.Count == 0)
             {
                 this.Text = "Searching...";
             }
