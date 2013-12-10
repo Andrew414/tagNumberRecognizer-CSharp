@@ -20,11 +20,25 @@ namespace Tagrec_S
                {
                    Application.EnableVisualStyles();
                    Application.SetCompatibleTextRenderingDefault(false);
-                   Application.Run(new TagrecSForm(args[0]));
+                   if (args != null && args.Length >= 1)
+                   {
+                       Application.Run(new TagrecSForm(args[0]));
+                   }
+                   else
+                   {
+                       Application.Run(new TagrecSForm(""));
+                   }
                }
                else
                {
-                   CaptureProcessor processor = new CaptureProcessor(args[1]);
+                   CaptureProcessor processor;
+                   if (args != null && args.Length >= 2) {
+                    processor = new CaptureProcessor(args[1]);
+                   }
+                   else  {
+                    processor = new CaptureProcessor("");                   
+                   }
+
                    while (true)
                    {
                        String result = processor.MakeCapture();

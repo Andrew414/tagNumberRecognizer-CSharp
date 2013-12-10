@@ -93,7 +93,7 @@ namespace Tagrec_S
 
                 List<Rectangle> numbers;
                 String carNumber = reader.ReadPlate(justNumber, out numbers);
-
+                justNumber.SaveImage("kill.jpg");
                 if (carNumber != "")
                 {
 

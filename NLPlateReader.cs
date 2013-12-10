@@ -182,9 +182,9 @@ namespace Tagrec_S
             }
 
             rectangles = null;
-            if (possibleNumbersAndLetters.Count == 7)
+            if (possibleNumbersAndLetters.Count >= 7)
             {
-                return RecognizeNumber(possibleNumbersAndLetters, ipl).Insert(4, " ");
+                return RecognizeNumber(possibleNumbersAndLetters, ipl);
             }
             else
             {
