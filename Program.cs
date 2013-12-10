@@ -1,30 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Tagrec_S
 {
-    
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main(String [] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            if (args.Length == 1)
-            {
-                Application.Run(new TagrecSForm(args[0]));
-            }
-            else
-            {
-                Application.Run(new TagrecSForm());
-            }
+           string filename = "";
+           if (args != null)
+           {
+               filename = args.Count() > 1 ? args.First(a => a != "cmd") : "";
+               if (!args.Contains("cmd"))
+               {
+                   Application.EnableVisualStyles();
+                   Application.SetCompatibleTextRenderingDefault(false);
+                   Application.Run(new TagrecSForm(args[0]));
+               }
+               else
+               {
+                   CaptureProcessor processor = new CaptureProcessor(args[1]);
+                   while (true)
+                   {
+                       String result = processor.MakeCapture();
+                       if (result == null)
+                       {
+                           return; 
+                       }
+                       if (result != "")
+                       {
+                           Console.WriteLine(result);
+                       }
+                   }
+               }
+           }
         }
     }
 }

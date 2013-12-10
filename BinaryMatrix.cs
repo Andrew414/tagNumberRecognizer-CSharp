@@ -20,9 +20,6 @@ namespace Tagrec_S
         // covered by unit-tests
         public BinaryMatrix(String filename, int width=120, int height = 200)
         {
-            //this.width = width;
-            //this.height = height;
-            //matrix = new int[width, height];
             using (StreamReader reader = new StreamReader(filename)) {            
                 String curLine;
                 int lineInd = 0;
@@ -42,9 +39,6 @@ namespace Tagrec_S
         // covered by unit-tests
         public BinaryMatrix(Bitmap bmp)
         {
-            //width = bmp.Width;
-            //height = bmp.Height;
-            //matrix = new int[width, height];
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
