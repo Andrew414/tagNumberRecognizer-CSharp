@@ -139,6 +139,11 @@ namespace Tagrec_S
         public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
         {
             IplImage ipl = new IplImage(new CvSize(650, 150), iplImage.Depth, iplImage.NChannels);
+            if (iplImage.Size.Width * iplImage.Size.Height == 0)
+            {
+                rectangles = null;
+                return "";
+            }
             iplImage.Resize(ipl);
 
             IplImage gray = new IplImage(ipl.Size, BitDepth.U8, 1);
@@ -152,7 +157,6 @@ namespace Tagrec_S
 
             CvMemStorage storage = Cv.CreateMemStorage(0);
             CvSeq<CvPoint> contours;
-
             int count = Cv.FindContours(binary, storage, out contours);
 
             List<ContourInfo> conInfo = new List<ContourInfo>();

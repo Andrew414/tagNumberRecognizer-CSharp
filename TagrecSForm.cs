@@ -41,6 +41,10 @@ namespace Tagrec_S
             }
 
             String result = processor.MakeCapture();
+            if (result == null)
+            {
+                return;
+            }
             if (result == "")
             {
                 Text = "Searching...";
