@@ -6,8 +6,8 @@
     Проект написан на языке С#. Проект использует сторонние библиотеки, такие как OpenCV, OpenCVSharp.
 
     Версии библиотек:
-        OpenCV          2.4.5 
-        OpenCVSharp     2.4.5
+        OpenCV          2.4.5     http://opencv.org/downloads.html
+        OpenCVSharp     2.4.5     https://code.google.com/p/opencvsharp/downloads/list
     
     Порядок добавления библиотек:
         Необходимо настроить следующие переменные окружения:
