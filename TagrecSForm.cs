@@ -63,7 +63,7 @@ namespace Tagrec_S
             dstPnt[2] = new CvPoint2D32f(box.Size.Width, 0);
             dstPnt[0] = new CvPoint2D32f(0, box.Size.Height);
             dstPnt[3] = new CvPoint2D32f(box.Size.Width, box.Size.Height);
-            
+
             CvBox2D newBox = box;
             newBox.Center.X -= leftX;
             newBox.Center.Y -= bottomY;
@@ -125,9 +125,8 @@ namespace Tagrec_S
 
             foreach (CvBox2D boxNumberRectangle in rectangles)
             {
-                
+
                 IplImage justNumber = getNumberAndRotatePerspective(boxNumberRectangle, snapshot);
-                IplImage notRotated = getJustNumberFromImage(snapshot, NLPlateReader.ConvertBox2DToRectangle(boxNumberRectangle));
 
                 List<Rectangle> numbers;
                 String carNumber = reader.ReadPlate(justNumber, out numbers);
@@ -180,7 +179,7 @@ namespace Tagrec_S
                 }
 
             }
-            
+
             if (rectangles.Count == 0)
             {
                 this.Text = "Searching...";
@@ -208,11 +207,11 @@ namespace Tagrec_S
 
         private void StartStopCaptureTimer()
         {
-            if (tmrCapture.Enabled) 
-            { 
-                StopCaptureTimer(); 
-            } 
-            else 
+            if (tmrCapture.Enabled)
+            {
+                StopCaptureTimer();
+            }
+            else
             {
                 StartCaptureTimer();
             }
@@ -247,7 +246,6 @@ namespace Tagrec_S
 
             StartStopCaptureTimer();
         }
-        
 
         private void btnSaveSelected_Click(object sender, EventArgs e)
         {
@@ -261,3 +259,4 @@ namespace Tagrec_S
         }
     }
 }
+

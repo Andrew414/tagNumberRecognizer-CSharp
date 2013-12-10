@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using NLog;
 using System;
 
 namespace Tagrec_S
@@ -13,7 +12,7 @@ namespace Tagrec_S
     {
         public MaskSignReader()
         {
-            LoadDatabase(@"C:\temp\OCR\");
+            LoadDatabase(@"./OCR");
         }
         
         public string[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
@@ -26,17 +25,17 @@ namespace Tagrec_S
         {
             foreach (var i in symbols)
             {
-                try
-                {
-                    BinaryMatrix matrix = new BinaryMatrix(folder + @"\" + i.ToString() + @"\" + i.ToString() + ".txt");
+                //try
+                //{
+                    BinaryMatrix matrix = new BinaryMatrix(folder + @"/" + i.ToString() + @"/" + i.ToString() + ".txt");
                     dict.Add(i, matrix);
-                }
-                catch(Exception /*e*/)
-                {
+                //}
+                //catch(Exception /*e*/)
+                //{
                     //TODO: add logger
                     //log = LogManager.GetCurrentClassLogger();
                     //log.Error("No such sign. Update your database. Exception message: " + e.Message);
-                }
+                //}
 
             }
         }

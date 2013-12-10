@@ -180,7 +180,7 @@ namespace Tagrec_S
             rectangles = null;
             if (possibleNumbersAndLetters.Count == 7)
             {
-                return RecognizeNumber(possibleNumbersAndLetters, ipl).Insert(4, " ").Insert(7, "-");
+                return RecognizeNumber(possibleNumbersAndLetters, ipl).Insert(4, " ");
             }
             else
             {
@@ -202,7 +202,7 @@ namespace Tagrec_S
                 ipl.Copy(justSign);
                 ipl.ResetROI();
 
-                finalNumber += reader.ReadSign(justSign, false);    
+                finalNumber += reader.ReadSign(justSign, false);
             }
 
             begin = DigitsAmountInFirstGroup;
@@ -215,7 +215,7 @@ namespace Tagrec_S
                 ipl.Copy(justSign);
                 ipl.ResetROI();
 
-                finalNumber += reader.ReadSign(justSign, true);    
+                finalNumber += reader.ReadSign(justSign, true);
             }
 
             begin += LettersAmountInSecondGroup;
