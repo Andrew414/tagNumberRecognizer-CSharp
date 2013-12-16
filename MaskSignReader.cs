@@ -13,8 +13,15 @@ namespace Tagrec_S
     {
         public MaskSignReader()
         {
-            StreamReader reader = new StreamReader("configdb.cfg");
-            LoadDatabase(reader.ReadLine());
+            try
+            {
+                StreamReader reader = new StreamReader("configdb.cfg");
+                LoadDatabase(reader.ReadLine());
+            }
+            catch(Exception)
+            {
+                LoadDatabase("./OCR");
+            }
         }
         
         public string[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
