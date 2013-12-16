@@ -10,8 +10,8 @@ namespace Tagrec_S
 {
     class ContourInfo : IComparable
     {
-        public double P;
-        public double S;
+        public double P; // perimeter
+        public double S; // square
 
         public CvBox2D Box;
 
@@ -31,9 +31,12 @@ namespace Tagrec_S
 
     class NLPlateReader : IPlateReader
     {
-        public const int DigitsAmountInFirstGroup = 4;
-        public const int LettersAmountInSecondGroup = 2;
-        public const int DigitsAmountInThirdGroup = 1;
+        // standart belarusian number has 4 digits, next 2 letters and the last digit.
+        // 1234 AB-7
+        
+        public const int DigitsAmountInFirstGroup = Constants.PLATEREADER_NUMBERS_1ST_GROUP;
+        public const int LettersAmountInSecondGroup = Constants.PLATEREADER_LETTERS_2ND_GROUP;
+        public const int DigitsAmountInThirdGroup = Constants.PLATEREADER_NUMBERS_3RD_GROUP;
 
         public NLPlateReader(/*TagrecSForm form*/)
         {
@@ -47,24 +50,38 @@ namespace Tagrec_S
 
             double angle = Math.Abs(info.Box.Angle);
 
-            if (angle > 40 && angle < 50)
+            if (angle > Constants.READER_LITTLE_ITEMS_ANGLE_FROM && 
+                angle < Constants.READER_LITTLE_ITEMS_ANGLE_TO)
             {
                 return false; // little ones;
             }
 
-            if (info.Box.Size.Height > 90 && info.Box.Size.Height < 110 && angle < 5)
+            //valid numbers are divided into 3 groups:
+            // straight
+            // 90-rotated, sometimes letter A recognized in this way
+            // 70-rotated, usually digit 4 and sometimes 7 recognized in this way
+
+            if (info.Box.Size.Height > Constants.READER_NO_ROTATE_HEIGHT_FROM && 
+                info.Box.Size.Height < Constants.READER_NO_ROTATE_HEIGHT_TO &&
+                angle < Constants.READER_NO_ROTATE_MAX_ANGLE)
             {
                 return true; //Just straight numbers
             }
 
-            if (info.Box.Size.Width > 90 && info.Box.Size.Width < 110 && angle > 80 && angle < 100)
+            if (info.Box.Size.Width > Constants.READER_90_ROTATE_HEIGHT_FROM && 
+                info.Box.Size.Width < Constants.READER_90_ROTATE_HEIGHT_TO &&
+                angle > Constants.READER_90_ROTATE_MIN_ANGLE &&
+                angle < Constants.READER_90_ROTATE_MAX_ANGLE)
             {
                 return true; //90-rotated ones
             }
 
-            if (angle > 65 && angle < 75 && info.Box.Size.Width > 80 && info.Box.Size.Width < 100)
+            if (angle > Constants.READER_70_ROTATE_MIN_ANGLE && 
+                angle < Constants.READER_70_ROTATE_MAX_ANGLE && 
+                info.Box.Size.Width > Constants.READER_70_ROTATE_WIDTH_FROM && 
+                info.Box.Size.Width < Constants.READER_70_ROTATE_WIDTH_TO)
             {
-                return true; // this is 4
+                return true; // this is 4 or maybe 7
             }
 
             return false;
@@ -82,26 +99,32 @@ namespace Tagrec_S
         {
             double angle = Math.Abs(box.Angle);
 
-            if (angle < 5)
+            if (angle < Constants.READER_NO_ROTATE_MAX_ANGLE)
             {
                 return new Rectangle(
                     (int)(box.Center.X - (box.Size.Width / 2)),
                     (int)(box.Center.Y - (box.Size.Height / 2)),
                     (int)(box.Size.Width), (int)(box.Size.Height));
             }
-            else if (angle > 80 && angle < 100)
+            else if (angle > Constants.READER_90_ROTATE_MIN_ANGLE && 
+                     angle < Constants.READER_90_ROTATE_MAX_ANGLE)
             {
                 return new Rectangle(
                     (int)(box.Center.X - (box.Size.Height / 2)),
                     (int)(box.Center.Y - (box.Size.Width / 2)),
-                    (int)(box.Size.Height), (int)(box.Size.Width));
+                    (int)(box.Size.Height), (int)(box.Size.Width)); // swap W and H
             }
-            else if (angle > 65 && angle < 75)
+            else if (angle > Constants.READER_70_ROTATE_MIN_ANGLE &&
+                     angle < Constants.READER_70_ROTATE_MAX_ANGLE)
             {
+                // below the image is also rotated more than for 45, so 
+                // it should also be swapper by W and H
+
                 return new Rectangle(
-                    (int)(box.Center.X - (box.Size.Height / 2) - 10),
-                    (int)(box.Center.Y - (box.Size.Width / 2) - 5),
-                    (int)(box.Size.Height) + 5, (int)(box.Size.Width) + 10);
+                    (int)(box.Center.X - (box.Size.Height / 2) + Constants.READER_70_DELTA_X),
+                    (int)(box.Center.Y - (box.Size.Width / 2) + Constants.READER_70_DELTA_Y),
+                    (int)(box.Size.Height) + Constants.READER_70_DELTA_WIDTH,
+                    (int)(box.Size.Width) + Constants.READER_70_DELTA_HEIGHT);  
             }
             else
             {
@@ -138,7 +161,11 @@ namespace Tagrec_S
 
         public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
         {
-            IplImage ipl = new IplImage(new CvSize(650, 150), iplImage.Depth, iplImage.NChannels);
+            IplImage ipl = new IplImage(new CvSize(
+                Constants.READER_DEFALUT_WIDTH, 
+                Constants.READER_DEFALUT_HEIGHT), 
+                iplImage.Depth, iplImage.NChannels);
+
             if (iplImage.Size.Width * iplImage.Size.Height == 0)
             {
                 rectangles = null;
@@ -150,10 +177,12 @@ namespace Tagrec_S
             ipl.CvtColor(gray, ColorConversion.BgrToGray);
 
             IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            gray.Smooth(blur, SmoothType.Blur,
+                Constants.PLATEREADER_BLUR_SIZE, 
+                Constants.PLATEREADER_BLUR_SIZE);
 
             IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            blur.Threshold(binary, Constants.PLATEREADER_THRESHOLD_FROM, Constants.PLATEREADER_THRESHOLD_TO, ThresholdType.Otsu);
 
             CvMemStorage storage = Cv.CreateMemStorage(0);
             CvSeq<CvPoint> contours;

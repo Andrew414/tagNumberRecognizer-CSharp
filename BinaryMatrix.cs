@@ -10,15 +10,16 @@ namespace Tagrec_S
 {
     class BinaryMatrix
     {
-        public const int WIDTH = 120;
-        public const int HEIGHT = 200;
+        public const int WIDTH = Constants.BINARY_MATRIX_WIDTH;
+        public const int HEIGHT = Constants.BINARY_MATRIX_HEIGHT;
 
-        private int width = 120;
-        private int height = 200;
+        private int width = WIDTH;
+        private int height = HEIGHT;
         private int[,] matrix = new int[WIDTH, HEIGHT];
 
         // covered by unit-tests
-        public BinaryMatrix(String filename, int width=120, int height = 200)
+        public BinaryMatrix(String filename, 
+            int width=Constants.BINARY_MATRIX_WIDTH, int height = Constants.BINARY_MATRIX_HEIGHT)
         {
             using (StreamReader reader = new StreamReader(filename)) {            
                 String curLine;
@@ -45,9 +46,10 @@ namespace Tagrec_S
                 {
                     Color color = bmp.GetPixel(i, j);
                     // Mother fucker hack
-                    if ((color.R - 255) * (color.R - 255) +
-                        (color.G - 255) * (color.G - 255) +
-                        (color.B - 255) * (color.B - 255) > 20 * 20 *3)
+                    if ((color.R - Constants.MAX_BRIGHTNESS) * (color.R - Constants.MAX_BRIGHTNESS) +
+                        (color.G - Constants.MAX_BRIGHTNESS) * (color.G - Constants.MAX_BRIGHTNESS) +
+                        (color.B - Constants.MAX_BRIGHTNESS) * (color.B - Constants.MAX_BRIGHTNESS) > 
+                            Constants.BINARY_MATRIX_TRESHOLD)
                     {
                         matrix[i, j] = 1;
                     }
@@ -57,7 +59,6 @@ namespace Tagrec_S
                     }
                 }
             }
-           
         }
 
         // covered with unit-tests

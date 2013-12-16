@@ -47,7 +47,7 @@ namespace Tagrec_S
 
         public static IplImage getNumberAndRotatePerspective(CvBox2D box, IplImage image)
         {
-            CvPoint2D32f[] dstPnt = new CvPoint2D32f[4];
+            CvPoint2D32f[] dstPnt = new CvPoint2D32f[4]; // 4 points
 
             float leftX = box.Center.X - box.Size.Width / (float)2;
             float bottomY = box.Center.Y - box.Size.Height / (float)2;
@@ -93,7 +93,7 @@ namespace Tagrec_S
 
                 List<Rectangle> numbers;
                 String carNumber = reader.ReadPlate(justNumber, out numbers);
-                justNumber.SaveImage("kill.jpg");
+                //justNumber.SaveImage("kill.jpg");
                 if (carNumber != "")
                 {
 

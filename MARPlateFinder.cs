@@ -27,13 +27,13 @@ namespace Tagrec_S
             ipl.CvtColor(gray, ColorConversion.BgrToGray);
 
             IplImage blur = new IplImage(ipl.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            gray.Smooth(blur, SmoothType.Blur, Constants.FINDER_BLUR_SIZE, Constants.FINDER_BLUR_SIZE);
 
             IplImage binary = new IplImage(ipl.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            blur.Threshold(binary, 0, Constants.FINDER_MAIN_THRESHOLD, ThresholdType.Otsu);
 
             IplImage canny = new IplImage(ipl.Size, BitDepth.U8, 1);
-            binary.Canny(canny, 20, 50);
+            binary.Canny(canny, Constants.FINDER_CANNY_FROM, Constants.FINDER_CANNY_TO);
 
             return canny;
         }
@@ -55,8 +55,8 @@ namespace Tagrec_S
                 CvBox2D box = Cv.MinAreaRect2(contours);
 
                 if 
-                (   box.Size.Width > 60 
-                    && box.Size.Height > 40
+                (   box.Size.Width > Constants.FINDER_MIN_WIDTH 
+                    && box.Size.Height > Constants.FINDER_MIN_HEIGHT
                 )
                 {
                     if (CheckPlate(ipl, box))

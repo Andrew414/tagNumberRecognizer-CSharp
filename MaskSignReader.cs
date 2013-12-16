@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System;
+using System.IO;
 
 namespace Tagrec_S
 {
@@ -12,7 +13,8 @@ namespace Tagrec_S
     {
         public MaskSignReader()
         {
-            LoadDatabase(@"./OCR");
+            StreamReader reader = new StreamReader("configdb.cfg");
+            LoadDatabase(reader.ReadLine());
         }
         
         public string[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
@@ -106,17 +108,18 @@ namespace Tagrec_S
         // convert by unit-tests
         public static IplImage ConvertImage(IplImage ipl)
         {
-            IplImage resized = new IplImage(new CvSize(120, 200), ipl.Depth, ipl.NChannels);
+            IplImage resized = new IplImage(new CvSize(Constants.BINARY_MATRIX_WIDTH, Constants.BINARY_MATRIX_HEIGHT),
+                ipl.Depth, ipl.NChannels);
             ipl.Resize(resized);
 
             IplImage gray = new IplImage(resized.Size, BitDepth.U8, 1);
             resized.CvtColor(gray, ColorConversion.BgrToGray);
 
             IplImage blur = new IplImage(resized.Size, BitDepth.U8, 1);
-            gray.Smooth(blur, SmoothType.Blur, 5, 5);
+            gray.Smooth(blur, SmoothType.Blur, Constants.SIGN_READER_BLUR_SIZE, Constants.SIGN_READER_BLUR_SIZE);
 
             IplImage binary = new IplImage(resized.Size, BitDepth.U8, 1);
-            blur.Threshold(binary, 0, 255, ThresholdType.Otsu);
+            blur.Threshold(binary, Constants.SIGN_READER_THRESHOLD_FROM, Constants.SIGN_READER_THRESHOLD_TO, ThresholdType.Otsu);
 
             return binary;
         }
