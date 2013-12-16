@@ -22,6 +22,7 @@ namespace Tagrec_S
             InitCapture (filename);
         }
 
+        // just filling some properties, no need to be tested.
         private void InitCapture(string filename)
         {
             lastNumberSaved = "";
@@ -45,6 +46,8 @@ namespace Tagrec_S
             reader = new NLPlateReader();
         }
 
+        // no need to be tested for two reasons. The first is that it is called from MakeCapture, 
+        // the second is that there will be some transofmation, it is hard to determine whether correct or not
         public static IplImage getNumberAndRotatePerspective(CvBox2D box, IplImage image)
         {
             CvPoint2D32f[] dstPnt = new CvPoint2D32f[4]; // 4 points
@@ -75,6 +78,9 @@ namespace Tagrec_S
             return dstImage;
         }
 
+        // no really need to test it, because it goes ONLY through the 3 class tested already,
+        // and this function contains really almost only UI features and helper features,
+        // that don't need to be tested.
         public String MakeCapture()
         {
             Color BorderColor;
@@ -85,15 +91,17 @@ namespace Tagrec_S
                 return null;
             }
             bmpSnapshot = snapshot.ToBitmap();
-            List<CvBox2D> rectangles = finder.FindRectangles(snapshot);
+            List<CvBox2D> rectangles = finder.FindRectangles(snapshot); // ->> to finder 
             String result = "";
             foreach (CvBox2D boxNumberRectangle in rectangles)
             {
                 IplImage justNumber = getNumberAndRotatePerspective(boxNumberRectangle, snapshot);
 
                 List<Rectangle> numbers;
-                String carNumber = reader.ReadPlate(justNumber, out numbers);
-                //justNumber.SaveImage("kill.jpg");
+                String carNumber = reader.ReadPlate(justNumber, out numbers); // ->> to reader, that ->> to signreader
+                
+                // all the below are UI features that do not need to be tested.
+
                 if (carNumber != "")
                 {
 
@@ -137,7 +145,7 @@ namespace Tagrec_S
             return result;
         }
 
-
+        // no need to be covered
         private void SafeSetPixel(ref Bitmap bmp, int x, int y, Color color)
         {
             if (x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
