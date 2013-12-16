@@ -162,8 +162,8 @@ namespace Tagrec_S
         public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
         {
             IplImage ipl = new IplImage(new CvSize(
-                Constants.READER_DEFALUT_WIDTH, 
-                Constants.READER_DEFALUT_HEIGHT), 
+                Constants.READER_DEFAULT_WIDTH, 
+                Constants.READER_DEFAULT_HEIGHT), 
                 iplImage.Depth, iplImage.NChannels);
 
             if (iplImage.Size.Width * iplImage.Size.Height == 0)
@@ -211,7 +211,7 @@ namespace Tagrec_S
             }
 
             rectangles = null;
-            if (possibleNumbersAndLetters.Count >= 7)
+            if (possibleNumbersAndLetters.Count >= Constants.PLATEREADER_NUMBER_LEN)
             {
                 return RecognizeNumber(possibleNumbersAndLetters, ipl);
             }

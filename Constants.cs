@@ -75,8 +75,8 @@ namespace Tagrec_S
         public const int READER_70_DELTA_WIDTH = 5;
         public const int READER_70_DELTA_HEIGHT = 10;
 
-        public const int READER_DEFALUT_WIDTH = 650;
-        public const int READER_DEFALUT_HEIGHT = 150;
+        public const int READER_DEFAULT_WIDTH = 650;
+        public const int READER_DEFAULT_HEIGHT = 150;
 
         #endregion
 
