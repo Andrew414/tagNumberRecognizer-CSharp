@@ -45,6 +45,7 @@ namespace Tagrec_S
 
         ISignReader reader = new MaskSignReader();
 
+        //covered
         public bool IsNumberOrLetter(ContourInfo info)
         {
 
@@ -95,6 +96,7 @@ namespace Tagrec_S
             }
         }
 
+        //covered
         public static Rectangle ConvertBox2DToRectangle(CvBox2D box)
         {
             double angle = Math.Abs(box.Angle);
@@ -132,6 +134,7 @@ namespace Tagrec_S
             }
         }
 
+        //covered
         public void DrawBorder(ref Bitmap bmp, ContourInfo info)
         {
             Color BorderColor = Color.Red;
@@ -159,6 +162,7 @@ namespace Tagrec_S
             }
         }
 
+        //covered
         public String ReadPlate(IplImage iplImage, out List<Rectangle> rectangles)
         {
             IplImage ipl = new IplImage(new CvSize(
@@ -213,6 +217,7 @@ namespace Tagrec_S
             rectangles = null;
             if (possibleNumbersAndLetters.Count >= Constants.PLATEREADER_NUMBER_LEN)
             {
+                ipl.SaveImage("kill.jpg");
                 return RecognizeNumber(possibleNumbersAndLetters, ipl);
             }
             else
@@ -221,6 +226,7 @@ namespace Tagrec_S
             }
         }
 
+        //covered as it is called from the prev function
         public String RecognizeNumber(List<ContourInfo> infos, IplImage ipl)
         {
             String finalNumber = "";

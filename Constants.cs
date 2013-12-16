@@ -55,7 +55,7 @@ namespace Tagrec_S
         public const int PLATEREADER_NUMBER_LEN = 7;
 
         public const int READER_LITTLE_ITEMS_ANGLE_FROM = 40;
-        public const int READER_LITTLE_ITEMS_ANGLE_TO = 40;
+        public const int READER_LITTLE_ITEMS_ANGLE_TO = 50;
 
         public const int READER_NO_ROTATE_HEIGHT_FROM = 90;
         public const int READER_NO_ROTATE_HEIGHT_TO = 110;

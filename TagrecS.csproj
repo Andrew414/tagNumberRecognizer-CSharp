@@ -66,6 +66,7 @@
     <Compile Include="IPlateFinder.cs" />
     <Compile Include="IPlateReader.cs" />
     <Compile Include="ISignReader.cs" />
+    <Compile Include="NLPlateReaderTest.cs" />
     <Compile Include="StupidPlateFinder.cs" />
     <Compile Include="StupidPlateReader.cs" />
     <Compile Include="StupidSignReader.cs" />
