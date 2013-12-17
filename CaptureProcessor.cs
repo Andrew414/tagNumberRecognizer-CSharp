@@ -89,7 +89,7 @@ namespace Tagrec_S
             if (snapshot == null)
             {
                 return null;
-            }
+            }      
             bmpSnapshot = snapshot.ToBitmap();
             List<CvBox2D> rectangles = finder.FindRectangles(snapshot); // ->> to finder 
             String result = "";
